@@ -8745,7 +8745,7 @@ var BlockScene = function (_util$Entity3) {
       // Don't allow player to leave early if allowEarlyExit is false
       var doneAddingButton = document.getElementById("done-adding");
       doneAddingButton.addEventListener("click", this.onAttemptDone);
-      doneAddingButton.disabled = !allowEarlyExit;
+      doneAddingButton.style.display = allowEarlyExit ? "block" : "none";
     }
   }, {
     key: "resetBlocks",
@@ -8779,13 +8779,13 @@ var BlockScene = function (_util$Entity3) {
       if (timeSinceStart > MAX_SEARCH_TIME) {
         this.timesUp = true;
 
-        document.getElementById("add-shape").disabled = true;
+        document.getElementById("add-shape").style.display = "none";
         if (galleryShapes.length < 5) {
           document.getElementById("stuck-message").style.display = "block";
-          document.getElementById("done-adding").disabled = true;
+          document.getElementById("done-adding").style.display = "none";
         } else {
           document.getElementById("continue-message").style.display = "block";
-          document.getElementById("done-adding").disabled = false;
+          document.getElementById("done-adding").style.display = "block";
         }
       }
 
