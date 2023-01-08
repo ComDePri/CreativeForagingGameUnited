@@ -8546,6 +8546,11 @@ var IntroScene = function (_util$Entity) {
   }, {
     key: "onDone",
     value: function onDone() {
+      // go full screen
+      requestFullscreen(document.getElementById("game-parent"));
+      showFullscreenIcon(false);
+
+      // register provided ID
       playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
       redmetricsConnection.updatePlayer(playerData);
 
