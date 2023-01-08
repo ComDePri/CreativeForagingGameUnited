@@ -8779,7 +8779,7 @@ var BlockScene = function (_util$Entity3) {
       if (timeSinceStart > MAX_SEARCH_TIME) {
         this.timesUp = true;
 
-        document.getElementById("add-shape").style.display = "none";
+        document.getElementById("add-shape").disabled = true;
         if (galleryShapes.length < 5) {
           document.getElementById("stuck-message").style.display = "block";
           document.getElementById("done-adding").style.display = "none";
