@@ -10515,8 +10515,8 @@
     };
 
     var searchParams = new URLSearchParams(window.location.search);
-    var allowEarlyExit = searchParams.get("allowEarlyExit") !== "false" && searchParams.get("allowEarlyExit") !== "0";
-    var showResults = searchParams.get("showResults") !== "false" && searchParams.get("showResults") !== "0";
+    var allowEarlyExit = searchParams.get("allowEarlyExit") === "true" || searchParams.get("allowEarlyExit") === "1";
+    var showResults = searchParams.get("showResults") === "true" || searchParams.get("showResults") === "1";
     var timerValue = searchParams.get("length");
 
     if (timerValue != null) {
