@@ -10464,8 +10464,8 @@
                     document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
 
                     // Setup followup link
+                    var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                     if (searchParams.has("followupLink")) {
-                        var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                         var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                         var metricsId = redmetricsConnection.playerId || "";
                         var userProvidedId = playerData.customData.userProvidedId || "";
@@ -10474,6 +10474,8 @@
                         if (!_.contains(link, "?")) link += "?";
                         link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                         document.getElementById("followup-link").href = link;
+                    } else if (expId === "ControlRoyG") {
+                        window.location.replace("https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm");
                     } else {
                         document.getElementById("followup-link-container").style.display = "none";
                     }
@@ -10519,9 +10521,6 @@
 
     if (timerValue != null) {
         MAX_SEARCH_TIME = parseInt(timerValue) * 60 * 1000;
-
-        //FIXME LANGUAGE DIFF
-        // document.getElementById("game-length-sentence").innerHTML = `אורך המשחק כ- ${parseInt(timerValue)} דקות.`
         document.getElementById("game-length-sentence").innerHTML = "The game is " + parseInt(timerValue) + " minutes long.";
     }
 
