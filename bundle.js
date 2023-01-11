@@ -10414,8 +10414,12 @@
 
                 document.getElementById("results-gui").style.display = "block";
 
+                var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
+                    if (expId === "ControlRoyG") {
+                        window.location.replace("https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm");
+                    }
                 } else {
                     document.getElementById("thanks-block").style.display = "none";
 
@@ -10464,7 +10468,6 @@
                     document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
 
                     // Setup followup link
-                    var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                     if (searchParams.has("followupLink")) {
                         var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                         var metricsId = redmetricsConnection.playerId || "";
