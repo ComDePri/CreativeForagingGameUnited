@@ -10415,10 +10415,12 @@
                 document.getElementById("results-gui").style.display = "block";
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
+                var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
+
                     if (expId === "ControlRoyG") {
-                        window.location.replace("https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm");
+                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
                     }
                 } else {
                     document.getElementById("thanks-block").style.display = "none";
@@ -10469,7 +10471,6 @@
 
                     // Setup followup link
                     if (searchParams.has("followupLink")) {
-                        var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                         var metricsId = redmetricsConnection.playerId || "";
                         var userProvidedId = playerData.customData.userProvidedId || "";
 
@@ -10478,7 +10479,7 @@
                         link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                         document.getElementById("followup-link").href = link;
                     } else if (expId === "ControlRoyG") {
-                        window.location.replace("https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm");
+                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
                     } else {
                         document.getElementById("followup-link-container").style.display = "none";
                     }
