@@ -9525,16 +9525,11 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
         createClass(IntroScene, [{
             key: "setup",
             value: function setup() {
-                if (localStorage.getItem('active') === 'results') {
-                    this.skip = true;
-                    return changeScene(localStorage.getItem('active'))
-                }
                 document.getElementById("intro-gui").style.display = "block";
 
                 document.getElementById("user-provided-id").addEventListener("keyup", this.onSetUserProvidedId.bind(this));
 
                 this.done = false;
-                this.skip = false;
                 document.getElementById("done-intro").disabled = true;
                 document.getElementById("done-intro").addEventListener("click", this.onDone.bind(this));
             }
@@ -9546,7 +9541,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
         }, {
             key: "requestedTransition",
             value: function requestedTransition(timeSinceStart) {
-                return this.done ? "next" : this.skip ? "skip" : null;
+                return this.done ? "next" : null;
             }
         }, {
             key: "onSetUserProvidedId",
@@ -9693,6 +9688,8 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
         return TrainingScene;
     }(Entity);
 
+    var timerOK = true;  // true as long as not kicked out due to not moving for too long
+
     var BlockScene = function (_util$Entity3) {
         inherits(BlockScene, _util$Entity3);
 
@@ -9717,7 +9714,6 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                 this.preventAddingShape = false;
                 this.timesUp = false;
                 this.changedShape = true;
-                this.timeOut = false;  // kicked out after not moving for too long
 
                 this.container = new PIXI.Container();
                 sceneLayer.addChild(this.container);
@@ -9855,7 +9851,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                             document.getElementById("square-timeout-modal").style.display = "none";
                             self.disableBlocks();
                             this.timesUp = true;
-                            this.timeOut = true;
+                            timerOK = false;
                             document.getElementById("add-shape").disabled = true;
                             localStorage.setItem('active', "results")
                             if (galleryShapes.length < 5) {
@@ -10545,7 +10541,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                 var qualtricsURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`;
-                if (this.timeOut) {
+                if (!timerOK) {
                     qualtricsURL += `&TIMER_OK=false`;
                 }
 
