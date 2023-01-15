@@ -9717,6 +9717,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                 this.preventAddingShape = false;
                 this.timesUp = false;
                 this.changedShape = true;
+                this.timeOut = false;  // kicked out after not moving for too long
 
                 this.container = new PIXI.Container();
                 sceneLayer.addChild(this.container);
@@ -9854,6 +9855,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                             document.getElementById("square-timeout-modal").style.display = "none";
                             self.disableBlocks();
                             this.timesUp = true;
+                            this.timeOut = true;
                             document.getElementById("add-shape").disabled = true;
                             localStorage.setItem('active', "results")
                             if (galleryShapes.length < 5) {
@@ -10542,19 +10544,24 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
+                var qualtricsURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`;
+                if (this.timeOut) {
+                    qualtricsURL += `&TIMER_OK=false`;
+                }
+
                 if (!showResults && (searchParams.has("followupLink") && (!localStorage.getItem('active')))) {
                     document.getElementById("results-block").style.display = "none";
                     document.getElementById("thanks-block-timeout").style.display = "none";
 
                     if (expId === "ControlRoyG") {
-                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
+                        window.location.replace(qualtricsURL);
                     }
                 } else if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
                     document.getElementById("thanks-block").style.display = "none";
 
                     if (expId === "ControlRoyG") {
-                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
+                        window.location.replace(qualtricsURL);
                     }
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
@@ -10614,7 +10621,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                         link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                         document.getElementById("followup-link").href = link;
                     } else if (expId === "ControlRoyG") {
-                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
+                        window.location.replace(qualtricsURL);
                     } else {
                         document.getElementById("followup-link-container").style.display = "none";
                     }
