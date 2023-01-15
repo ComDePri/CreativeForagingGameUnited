@@ -10,6 +10,7 @@ button {
   color: white;
   font-size: 0.7em;
   cursor: pointer;
+  position: relative;
 }
 
 button:hover {
@@ -52,11 +53,9 @@ a {
 
 #game-container {
   position: relative;
-
   transform-origin: 0% 0%;
   -webkit-transform-origin: 0% 0%;
   -ms-transform-origin: 0% 0%;
-
   font-family: Arial;
   font-size: 20px;
   color: limegreen;
@@ -87,12 +86,11 @@ a {
 
 #sections > * {
   display: none;
-
   position: absolute;
   top: 0;
   left: 0;
   width: 960px;
-  height: 540px;
+  height: 670px;
 }
 
 #fullscreen-button {
@@ -101,6 +99,14 @@ a {
   left: 10px;
   font-size: 2em;
 }
+
+#square-countdown {
+  position: absolute;
+  top: 0px;
+  left: 70px;
+  font-size: 1.2em;
+}
+
 
 #html-layer input, 
 #html-layer button, 
@@ -123,14 +129,15 @@ a {
 
 #add-shape {
   position: absolute;
-  top: 10px;
-  left: 405px;
+  top: 170px;
+  right: 10px;
 }
 
 #done-adding {
   position: absolute;
-  top: 420px;
+  top: 590px;
   right: 10px;
+  left: 400px;
 }
 
 #gallery-instructions {
@@ -150,10 +157,6 @@ a {
   bottom: 20px;
   text-align: center;
   width: 100%;
-}
-
-#practice-title {
-  font-size: 1.5em;
 }
 
 #done-training-1 {
@@ -181,7 +184,8 @@ a {
   color: white;
 }
 
-#modal-confirm-done {
+#modal-confirm-done,
+#square-timeout-modal {
   position: absolute;
   top: 0;
   left: 0;
@@ -191,10 +195,11 @@ a {
   pointer-events: all;
 }
 
-#modal-confirm-box {
+#modal-confirm-box,
+#square-timeout-box {
   position: absolute;
   width: 320px;
-  height: 110px;
+  height: 150px;
   top: 25%;
   left: 25%;
   padding: 57px;
@@ -202,7 +207,8 @@ a {
   background-color: white;
 }
 
-#modal-confirm-box p {
+#modal-confirm-box p,
+#square-timeout-box p {
   color: black;
 }
 
@@ -234,7 +240,13 @@ a {
 }
 
 #thanks-block {
-  height: 540px;
+  height: 670px;
+}
+
+#thanks-block-timeout {
+  height: 450px;
+  padding-left: 100px;
+  padding-right: 100px;
 }
 
 #stuck-message {
@@ -249,28 +261,7 @@ a {
   font-size: xx-large;
 }
 
-
-#redmetrics-connection-status {
-  position: absolute;
-  text-align: left;
-  width: 960px;
-  height: 540px;
-  left: 10px;
-  top: 510px;
-  font-size: small;
+#throw-out-2 {
+  margin-left: auto;
+  margin-right: auto;
 }
-
-#redmetrics-connection-status-connecting {
-  color: grey;
-}
-
-#redmetrics-connection-status-connected {
-  display: none;
-  color: limegreen;
-}
-
-#redmetrics-connection-status-disconnected {
-  display: none;
-  color: brown;
-}
-

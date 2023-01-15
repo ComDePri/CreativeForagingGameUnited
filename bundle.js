@@ -1,3 +1,6 @@
+//compare ip
+fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
+
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
         typeof define === 'function' && define.amd ? define(factory) :
@@ -9118,7 +9121,15 @@
     }
 
     function provideNextScene(sceneTransitions, currentScene, requestedTransition) {
-        if (currentScene in sceneTransitions) return sceneTransitions[currentScene];
+        if (currentScene in sceneTransitions) {
+
+            if (requestedTransition === 'next') {
+                return sceneTransitions[currentScene][0]
+            } else if (requestedTransition === 'skip') {
+                return sceneTransitions[currentScene][1]
+            }
+
+        }
 
         console.error("No transition from", currentScene, "with transition", requestedTransition);
         return null;
@@ -9368,7 +9379,9 @@
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
     var RED_METRICS_HOST = "api.creativeforagingtask.com";
-    var RED_METRICS_GAME_VERSION = "b13751f1-637f-411b-8ce2-29b1b24fddf0";
+    var RED_METRICS_GAME_VERSION = "dff09f30-f1ca-406a-aff0-7eff70f2563d";
+
+    var inTraining = true;
 
     var TRIGGERS = {
         "loadGame": 100, // When loads starts
@@ -9512,11 +9525,16 @@
         createClass(IntroScene, [{
             key: "setup",
             value: function setup() {
+                if (localStorage.getItem('active') === 'results') {
+                    this.skip = true;
+                    return changeScene(localStorage.getItem('active'))
+                }
                 document.getElementById("intro-gui").style.display = "block";
 
                 document.getElementById("user-provided-id").addEventListener("keyup", this.onSetUserProvidedId.bind(this));
 
                 this.done = false;
+                this.skip = false;
                 document.getElementById("done-intro").disabled = true;
                 document.getElementById("done-intro").addEventListener("click", this.onDone.bind(this));
             }
@@ -9528,7 +9546,7 @@
         }, {
             key: "requestedTransition",
             value: function requestedTransition(timeSinceStart) {
-                return this.done ? "next" : null;
+                return this.done ? "next" : this.skip ? "skip" : null;
             }
         }, {
             key: "onSetUserProvidedId",
@@ -9550,7 +9568,14 @@
                 // register provided ID
                 playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
                 redmetricsConnection.updatePlayer(playerData);
-
+                fetch('https://k-lab.iem.technion.ac.il/api/h', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({exp: 'wp', user_id: playerData.customData.userProvidedId})
+                });
                 this.done = true;
             }
         }]);
@@ -9574,11 +9599,12 @@
                 this.didDropBlock = false;
 
                 this.blockScene = new BlockScene(true);
-                this.blockScene.setup();
+                this.blockScene.setup(true);
 
                 this.blockScene.preventAddingShape = true;
                 document.getElementById("add-shape").style.display = "none";
                 document.getElementById("done-adding").style.display = "none";
+                // document.getElementById("square-countdown").style.display = "none";
 
                 this.blockScene.on("droppedBlock", this.onDroppedBlock, this);
                 this.blockScene.on("addedShape", this.onAddedShape, this);
@@ -9586,10 +9612,12 @@
                 document.getElementById("training-gui").style.display = "block";
                 document.getElementById("done-training-1").addEventListener("click", this.onDonePart1.bind(this));
                 document.getElementById("done-training-2").addEventListener("click", this.onDonePart2.bind(this));
-                document.getElementById("done-training-4").addEventListener("click", this.onDonePart4.bind(this));
-                document.getElementById("done-training-5").addEventListener("click", function (e) {
+                document.getElementById("done-training-4").addEventListener("click", this.onDonePart3.bind(this));
+                document.getElementById("after-saving").addEventListener("click", this.onSavingFirstTime.bind(this));
+                document.getElementById("done-training-3").addEventListener("click", function (e) {
                     _this3.done = true;
-
+                    inTraining = false;
+                    sceneStartedAt = Date.now();
                     sendTrigger("startGame");
                 });
             }
@@ -9628,9 +9656,6 @@
             value: function onDonePart1() {
                 document.getElementById("training-1").style.display = "none";
                 document.getElementById("training-2").style.display = "block";
-
-                // hide title
-                document.getElementById("training-title").style.visibility = "hidden";
             }
         }, {
             key: "onDonePart2",
@@ -9641,24 +9666,28 @@
                 document.getElementById("training-3").style.display = "block";
 
                 document.getElementById("add-shape").style.display = "block";
-                document.getElementById("pixi-canvas").focus();
                 this.blockScene.preventAddingShape = false;
+            }
+        }, {
+            key: "onDonePart3",
+            value: function onDonePart3() {
+                document.getElementById("training-5").style.display = "none";
+                document.getElementById("training-4").style.display = "block";
+            }
+        }, {
+            key: "onSavingFirstTime",
+            value: function onSavingFirstTime() {
+                document.getElementById("training-3").style.display = "none";
+                document.getElementById("training-5").style.display = "block";
+                this.blockScene.teardown();
+                this.blockScene.setup(true);
+                this.blockScene.off("addedShape", this.onAddedShape, this);
             }
         }, {
             key: "onAddedShape",
             value: function onAddedShape() {
-                document.getElementById("training-3").style.display = "none";
-                document.getElementById("training-5").style.display = "block";
-                // document.getElementById('training-4').style.display = "block";
-                // this.blockScene.teardown()
-                this.blockScene.resetBlocks();
-                this.blockScene.off("addedShape", this.onAddedShape, this);
-            }
-        }, {
-            key: "onDonePart4",
-            value: function onDonePart4() {
-                document.getElementById('training-4').style.display = "none";
-                document.getElementById('training-5').style.display = "block";
+                document.getElementById("click-there-p").innerHTML = "";
+                document.getElementById("after-saving").style.display = "inline";
             }
         }]);
         return TrainingScene;
@@ -9674,8 +9703,10 @@
 
         createClass(BlockScene, [{
             key: "setup",
-            value: function setup() {
+            value: function setup(isTraining) {
+                this.isTraining = isTraining;
                 this.done = false;
+                this.skip = false;
                 this.draggingBlock = null;
                 this.draggingBlockStartGridPosition = null;
                 this.startDragTime = null;
@@ -9738,40 +9769,109 @@
                 this.onAttemptDone = this.onAttemptDone.bind(this);
                 this.cancelModal = this.cancelModal.bind(this);
                 this.confirmDone = this.confirmDone.bind(this);
-                this.onKeyUp = this.onKeyUp.bind(this);
                 document.getElementById("add-shape").addEventListener("click", this.onAddShape);
                 document.getElementById("modal-confirm-cancel-button").addEventListener("click", this.cancelModal);
                 document.getElementById("modal-confirm-done-button").addEventListener("click", this.confirmDone);
-                document.getElementById("pixi-canvas").addEventListener("keyup", this.onKeyUp);
 
                 // Don't allow player to leave early if allowEarlyExit is false
                 var doneAddingButton = document.getElementById("done-adding");
                 doneAddingButton.addEventListener("click", this.onAttemptDone);
                 doneAddingButton.style.display = allowEarlyExit ? "block" : "none";
+
+                // Timer for picking up squares
+                if (!this.isTraining) {
+                    // document.getElementById("square-countdown").style.display = "block";
+                    this.startSquaresCountdown();
+                }
+                document.getElementById("square-timeout-done-button").addEventListener("click", this.squareTimeoutOkButton);
+            }
+            /**
+             * Starts countdown when the player is choosing a block. (Called after dropping a square)
+             */
+
+        }, {
+            key: "startSquaresCountdown",
+            value: function startSquaresCountdown() {
+                if (!this.isTraining) {
+                    var squareCountdownValue = 60;
+                    var self = this;
+                    window.squareCountdown = setInterval(function () {
+                        squareCountdownValue--;
+                        if (squareCountdownValue > 0) {
+                            document.getElementById("square-countdown").innerHTML = squareCountdownValue.toString();
+                        } else {
+                            clearInterval(window.squareCountdown);
+                            document.getElementById("square-countdown").innerHTML = "10";
+                            document.getElementById("square-timeout-modal").style.display = "block";
+                            self.startSecondTimer();
+                        }
+                    }, 1000);
+                }
+            }
+
+            /**
+             * Stops the countdown timer between choosing squares. (Called after choosing a square)
+             */
+
+        }, {
+            key: "stopSquaresCountdown",
+            value: function stopSquaresCountdown() {
+                if (!this.isTraining) {
+                    clearInterval(window.squareCountdown);
+                    document.getElementById("square-countdown").innerHTML = "60";
+                }
             }
         }, {
-            key: "resetBlocks",
-            value: function resetBlocks() {
-                this.container.removeChild(this.blocksContainer);
+            key: "squareTimeoutOkButton",
+            value: function squareTimeoutOkButton() {
+                document.getElementById("square-timeout-modal").style.display = "none";
+            }
 
-                this.blocksContainer = new PIXI.Container();
-                this.container.addChild(this.blocksContainer);
-                this.blockGrid = [];
-                for (var i = 0; i < 10; i++) {
-                    var gridPos = new PIXI.Point(i, 0);
-                    this.blockGrid.push(gridPos);
+            /**
+             * This starts the 10 seconds timer that is after the 60 seconds timer for choosing blocks.
+             */
 
-                    var rect = makeBlockShape(gridPos);
-
-                    rect.buttonMode = true;
-                    rect.on("pointerdown", this.onPointerDown.bind(this));
-                    rect.on("pointerup", this.onPointerUp.bind(this));
-                    rect.on("pointermove", this.onPointerMove.bind(this));
-
-                    this.blocksContainer.addChild(rect);
+        }, {
+            key: "onDoneSelection",
+            value: function onDoneSelection() {
+                sendTrigger("galleryDone");
+                this.skip = true;
+                return changeScene("results")
+            }
+        }, {
+            key: "startSecondTimer",
+            value: function startSecondTimer() {
+                if (!this.isTraining) {
+                    clearInterval(window.squareCountdown);
+                    var squareCountdownValue = 10;
+                    var self = this;
+                    window.squareCountdown = setInterval(function () {
+                        squareCountdownValue--;
+                        if (squareCountdownValue > 0) {
+                            document.getElementById("square-countdown").innerHTML = squareCountdownValue.toString();
+                        } else {
+                            clearInterval(window.squareCountdown);
+                            document.getElementById("square-timeout-modal").style.display = "none";
+                            self.disableBlocks();
+                            this.timesUp = true;
+                            document.getElementById("add-shape").disabled = true;
+                            localStorage.setItem('active', "results")
+                            if (galleryShapes.length < 5) {
+                                document.getElementById("stuck-message").style.display = "block";
+                                document.getElementById("throw-out").addEventListener("click", function (e) {
+                                    return self.onDoneSelection();
+                                });
+                            } else {
+                                document.getElementById("continue-message").style.display = "block";
+                                document.getElementById("throw-out-2").style.display = 'block';
+                                document.getElementById("throw-out-2").addEventListener("click", function (e) {
+                                    return self.onDoneSelection();
+                                });
+                            }
+                            document.getElementById("done-adding").style.display = "none";
+                        }
+                    }, 1000);
                 }
-
-                this.updateBlocks();
             }
         }, {
             key: "update",
@@ -9779,11 +9879,13 @@
                 if (this.timesUp) return;
 
                 if (timeSinceStart > MAX_SEARCH_TIME) {
+                    if (inTraining) return;
                     this.timesUp = true;
 
                     document.getElementById("add-shape").disabled = true;
                     if (galleryShapes.length < 5) {
                         document.getElementById("stuck-message").style.display = "block";
+                        document.getElementById("thrown-out").addEventListener("click", this.onDoneSelection.bind(this));
                         document.getElementById("done-adding").style.display = "none";
                     } else {
                         document.getElementById("continue-message").style.display = "block";
@@ -9836,7 +9938,7 @@
         }, {
             key: "requestedTransition",
             value: function requestedTransition(timeSinceStart) {
-                return this.done ? "next" : null;
+                return this.done ? "next" : this.skip ? 'skip' : null;
             }
         }, {
             key: "highlightMovableBlocks",
@@ -9926,6 +10028,9 @@
 
                 // Disable html buttons
                 document.getElementById("html-layer").className = "no-pointer-events";
+
+                // Stop the current squares countdown.
+                this.stopSquaresCountdown();
             }
         }, {
             key: "onPointerUp",
@@ -9947,6 +10052,9 @@
                 document.getElementById("html-layer").className = "";
 
                 this.emit("droppedBlock");
+
+                // Start the squares countdown
+                this.startSquaresCountdown();
             }
         }, {
             key: "onPointerMove",
@@ -9955,17 +10063,6 @@
                 if (e.data.pointerId !== this.draggingPointerId) return;
 
                 this.draggingBlock.position = subtract(e.data.getLocalPosition(app$1.stage), this.blocksContainer.position);
-            }
-        }, {
-            key: "onKeyUp",
-            value: function onKeyUp(e) {
-                // If they pressed a number key, add the shape
-                if (!isNaN(parseInt(e.key))) {
-                    var keyValue = parseInt(e.key);
-                    if (keyValue == 1 || keyValue == 2) {
-                        this.onAddShape();
-                    }
-                }
             }
         }, {
             key: "updateBlocks",
@@ -10018,6 +10115,34 @@
                 }
             }
         }, {
+            key: "disableBlocks",
+            value: function disableBlocks() {
+                var _iteratorNormalCompletion5 = true;
+                var _didIteratorError5 = false;
+                var _iteratorError5 = undefined;
+
+                try {
+                    for (var _iterator5 = this.blocksContainer.children[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+                        var blockGraphic = _step5.value;
+
+                        blockGraphic.interactive = false;
+                    }
+                } catch (err) {
+                    _didIteratorError5 = true;
+                    _iteratorError5 = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
+                            _iterator5.return();
+                        }
+                    } finally {
+                        if (_didIteratorError5) {
+                            throw _iteratorError5;
+                        }
+                    }
+                }
+            }
+        }, {
             key: "dropBlock",
             value: function dropBlock(block, droppedPos) {
                 // Find closest grid position
@@ -10046,13 +10171,13 @@
             key: "findFreeGridPositions",
             value: function findFreeGridPositions() {
                 var ret = [];
-                var _iteratorNormalCompletion5 = true;
-                var _didIteratorError5 = false;
-                var _iteratorError5 = undefined;
+                var _iteratorNormalCompletion6 = true;
+                var _didIteratorError6 = false;
+                var _iteratorError6 = undefined;
 
                 try {
-                    for (var _iterator5 = this.blockGrid[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-                        var b = _step5.value;
+                    for (var _iterator6 = this.blockGrid[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+                        var b = _step6.value;
 
                         ret.push(new PIXI.Point(b.x - 1, b.y));
                         ret.push(new PIXI.Point(b.x + 1, b.y));
@@ -10060,16 +10185,16 @@
                         ret.push(new PIXI.Point(b.x, b.y + 1));
                     }
                 } catch (err) {
-                    _didIteratorError5 = true;
-                    _iteratorError5 = err;
+                    _didIteratorError6 = true;
+                    _iteratorError6 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                            _iterator5.return();
+                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
+                            _iterator6.return();
                         }
                     } finally {
-                        if (_didIteratorError5) {
-                            throw _iteratorError5;
+                        if (_didIteratorError6) {
+                            throw _iteratorError6;
                         }
                     }
                 }
@@ -10135,6 +10260,7 @@
 
                 sendTrigger("collectShape");
 
+                this.stopSquaresCountdown();
                 var galleryShape = cloneData(this.blockGrid);
                 galleryShapes.push(galleryShape);
                 this.updateGalleryShape(galleryShape);
@@ -10150,7 +10276,7 @@
                         timeSinceLastMouseUp: Date.now() - this.lastMouseUpTime
                     }
                 });
-
+                this.startSquaresCountdown();
                 this.emit("addedShape");
             }
         }, {
@@ -10175,34 +10301,34 @@
                 sendTrigger("endGame");
 
                 this.done = true;
-
+                this.isTraining = true;
                 searchScore = calculateSearchScore();
             }
         }, {
             key: "updateGalleryShape",
             value: function updateGalleryShape(galleryShape) {
                 this.galleryLayer.removeChildren();
-                var _iteratorNormalCompletion6 = true;
-                var _didIteratorError6 = false;
-                var _iteratorError6 = undefined;
+                var _iteratorNormalCompletion7 = true;
+                var _didIteratorError7 = false;
+                var _iteratorError7 = undefined;
 
                 try {
-                    for (var _iterator6 = galleryShape[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-                        var block = _step6.value;
+                    for (var _iterator7 = galleryShape[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
+                        var block = _step7.value;
 
                         this.galleryLayer.addChild(makeBlockShape(block));
                     }
                 } catch (err) {
-                    _didIteratorError6 = true;
-                    _iteratorError6 = err;
+                    _didIteratorError7 = true;
+                    _iteratorError7 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion6 && _iterator6.return) {
-                            _iterator6.return();
+                        if (!_iteratorNormalCompletion7 && _iterator7.return) {
+                            _iterator7.return();
                         }
                     } finally {
-                        if (_didIteratorError6) {
-                            throw _iteratorError6;
+                        if (_didIteratorError7) {
+                            throw _iteratorError7;
                         }
                     }
                 }
@@ -10273,27 +10399,27 @@
                     pageContainer.addChild(galleryParent);
 
                     var galleryLayer = new PIXI.Container();
-                    var _iteratorNormalCompletion7 = true;
-                    var _didIteratorError7 = false;
-                    var _iteratorError7 = undefined;
+                    var _iteratorNormalCompletion8 = true;
+                    var _didIteratorError8 = false;
+                    var _iteratorError8 = undefined;
 
                     try {
-                        for (var _iterator7 = galleryShapes[i][Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-                            var block = _step7.value;
+                        for (var _iterator8 = galleryShapes[i][Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                            var block = _step8.value;
 
                             galleryLayer.addChild(makeBlockShape(block));
                         }
                     } catch (err) {
-                        _didIteratorError7 = true;
-                        _iteratorError7 = err;
+                        _didIteratorError8 = true;
+                        _iteratorError8 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion7 && _iterator7.return) {
-                                _iterator7.return();
+                            if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                                _iterator8.return();
                             }
                         } finally {
-                            if (_didIteratorError7) {
-                                throw _iteratorError7;
+                            if (_didIteratorError8) {
+                                throw _iteratorError8;
                             }
                         }
                     }
@@ -10416,13 +10542,22 @@
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                if (!showResults) {
+                if (!showResults && (searchParams.has("followupLink") && (!localStorage.getItem('active')))) {
                     document.getElementById("results-block").style.display = "none";
+                    document.getElementById("thanks-block-timeout").style.display = "none";
+
+                    if (expId === "ControlRoyG") {
+                        window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
+                    }
+                } else if (!showResults) {
+                    document.getElementById("results-block").style.display = "none";
+                    document.getElementById("thanks-block").style.display = "none";
 
                     if (expId === "ControlRoyG") {
                         window.location.replace(`https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`);
                     }
                 } else {
+                    document.getElementById("thanks-block-timeout").style.display = "none";
                     document.getElementById("thanks-block").style.display = "none";
 
                     var slider = new PIXI.Sprite(app$1.loader.resources["images/slider.png"].texture);
@@ -10442,27 +10577,27 @@
                     }
 
                     var searchScorePercent = Math.round(Math.abs(searchScore) * 100);
-                    var _iteratorNormalCompletion8 = true;
-                    var _didIteratorError8 = false;
-                    var _iteratorError8 = undefined;
+                    var _iteratorNormalCompletion9 = true;
+                    var _didIteratorError9 = false;
+                    var _iteratorError9 = undefined;
 
                     try {
-                        for (var _iterator8 = document.getElementsByClassName("searchScorePercent")[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-                            var el = _step8.value;
+                        for (var _iterator9 = document.getElementsByClassName("searchScorePercent")[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+                            var el = _step9.value;
 
                             el.innerText = searchScorePercent;
                         }
                     } catch (err) {
-                        _didIteratorError8 = true;
-                        _iteratorError8 = err;
+                        _didIteratorError9 = true;
+                        _iteratorError9 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion8 && _iterator8.return) {
-                                _iterator8.return();
+                            if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                                _iterator9.return();
                             }
                         } finally {
-                            if (_didIteratorError8) {
-                                throw _iteratorError8;
+                            if (_didIteratorError9) {
+                                throw _iteratorError9;
                             }
                         }
                     }
@@ -10470,7 +10605,7 @@
                     document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
 
                     // Setup followup link
-                    if (searchParams.has("followupLink")) {
+                    if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
                         var metricsId = redmetricsConnection.playerId || "";
                         var userProvidedId = playerData.customData.userProvidedId || "";
 
@@ -10483,6 +10618,17 @@
                     } else {
                         document.getElementById("followup-link-container").style.display = "none";
                     }
+                }
+
+                // Redirecting to a link after the experiment. This is different from the one above
+                // because it doensn't have the parameters.
+                // TODO delete one of them.
+                if (searchParams.has("urlNextLink") && (!localStorage.getItem('active'))) {
+                    var link = searchParams.get("urlNextLink");
+                    if (!_.contains(link, "http://")) {
+                        link = "http://" + link;
+                    }
+                    window.location.replace(link);
                 }
             }
         }, {
@@ -10504,10 +10650,10 @@
     };
 
     var sceneTransitions = {
-        intro: "training",
-        training: "block",
-        block: "gallery",
-        gallery: "results"
+        intro: ["training", "results"],
+        training: ["block"],
+        block: ["gallery", "results"],
+        gallery: ["results"],
     };
 
     var metricsStartSceneEvents = {
@@ -10528,6 +10674,8 @@
         document.getElementById("game-length-sentence").innerHTML = "The game is " + parseInt(timerValue) + " minutes long.";
     }
 
+    var gameVersion = searchParams.get("gameVersion");
+
     var galleryShapes = [];
     var searchScore = 0.33;
     var redmetricsConnection = void 0;
@@ -10539,7 +10687,7 @@
 
     var app$1 = new PIXI.Application({
         width: 960,
-        height: 540,
+        height: 670,
         view: document.getElementById("pixi-canvas"),
         antialias: true
     });
@@ -10547,34 +10695,6 @@
     app$1.loader.add(["images/slider.png"]).on("progress", loadProgressHandler).load(setup);
 
 // Load RedMetrics
-    function showRedMetricsStatus(status) {
-        var _iteratorNormalCompletion9 = true;
-        var _didIteratorError9 = false;
-        var _iteratorError9 = undefined;
-
-        try {
-            for (var _iterator9 = document.getElementById("redmetrics-connection-status").children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-                var child = _step9.value;
-
-                var shouldShow = child.id === "redmetrics-connection-status-" + status;
-                child.style.display = shouldShow ? "block" : "none";
-            }
-        } catch (err) {
-            _didIteratorError9 = true;
-            _iteratorError9 = err;
-        } finally {
-            try {
-                if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                    _iterator9.return();
-                }
-            } finally {
-                if (_didIteratorError9) {
-                    throw _iteratorError9;
-                }
-            }
-        }
-    }
-
     var playerData = {
         externalId: searchParams.get("userId") || searchParams.get("userID"),
         customData: {
@@ -10584,16 +10704,15 @@
         }
     };
 
+    var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
+
     redmetricsConnection = redmetrics.prepareWriteConnection({
         host: RED_METRICS_HOST,
-        gameVersionId: searchParams.get("gameVersion") || RED_METRICS_GAME_VERSION,
+        gameVersionId: gameVersionId,
         player: playerData
     });
     redmetricsConnection.connect().then(function () {
         console.log("Connected to the RedMetrics server");
-        showRedMetricsStatus("connected");
-    }).catch(function () {
-        showRedMetricsStatus("disconnected");
     });
 
 // Connect to parallel port via Mister P
