@@ -1,6 +1,3 @@
-//compare ip
-fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
-
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
         typeof define === 'function' && define.amd ? define(factory) :
@@ -9563,14 +9560,7 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                 // register provided ID
                 playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
                 redmetricsConnection.updatePlayer(playerData);
-                fetch('https://k-lab.iem.technion.ac.il/api/h', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({exp: 'wp', user_id: playerData.customData.userProvidedId})
-                });
+
                 this.done = true;
             }
         }]);
@@ -10061,6 +10051,17 @@ fetch('https://k-lab.iem.technion.ac.il/api/h/wp');
                 if (e.data.pointerId !== this.draggingPointerId) return;
 
                 this.draggingBlock.position = subtract(e.data.getLocalPosition(app$1.stage), this.blocksContainer.position);
+            }
+        }, {
+            key: "onKeyUp",
+            value: function onKeyUp(e) {
+                // If they pressed a number key, add the shape
+                if (!isNaN(parseInt(e.key))) {
+                    var keyValue = parseInt(e.key);
+                    if (keyValue == 1 || keyValue == 2) {
+                        this.onAddShape();
+                    }
+                }
             }
         }, {
             key: "updateBlocks",
