@@ -10541,9 +10541,9 @@
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                var qualtricsURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm?PROLIFIC_PID=${userId}`;
+                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm/?PROLIFIC_PID=${userId}`;
                 if (!timerOK) {
-                    qualtricsURL += `&TIMER_OK=false`;
+                    redirectURL = `https://app.prolific.co/submissions/complete?cc=C135SBBZ`;
                 }
 
                 if (!showResults && (searchParams.has("followupLink") && (!localStorage.getItem('active')))) {
@@ -10551,14 +10551,14 @@
                     document.getElementById("thanks-block-timeout").style.display = "none";
 
                     if (expId === "ControlRoyG") {
-                        window.location.replace(qualtricsURL);
+                        window.location.replace(redirectURL);
                     }
                 } else if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
                     document.getElementById("thanks-block").style.display = "none";
 
                     if (expId === "ControlRoyG") {
-                        window.location.replace(qualtricsURL);
+                        window.location.replace(redirectURL);
                     }
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
@@ -10618,7 +10618,7 @@
                         link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                         document.getElementById("followup-link").href = link;
                     } else if (expId === "ControlRoyG") {
-                        window.location.replace(qualtricsURL);
+                        window.location.replace(redirectURL);
                     } else {
                         document.getElementById("followup-link-container").style.display = "none";
                     }
