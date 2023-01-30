@@ -10691,7 +10691,7 @@
 
     var app$1 = new PIXI.Application({
         width: 960,
-        height: 670,
+        height: 540,
         view: document.getElementById("pixi-canvas"),
         antialias: true
     });
