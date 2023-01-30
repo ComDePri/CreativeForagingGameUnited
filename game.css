@@ -14,11 +14,11 @@ button {
 }
 
 button:hover {
-  border: 1px dotted orange; 
+  border: 1px dotted orange;
 }
 
 button:disabled {
-  background-color: darkgrey; 
+  background-color: darkgrey;
   border: 1px solid white;
 }
 
@@ -77,7 +77,7 @@ a {
 #pixi-canvas {
   position: absolute;
   top: 0;
-  left: 0;  
+  left: 0;
 }
 
 #html-layer {
@@ -108,21 +108,21 @@ a {
 }
 
 
-#html-layer input, 
-#html-layer button, 
-#html-layer label, 
-#html-layer a, 
+#html-layer input,
+#html-layer button,
+#html-layer label,
+#html-layer a,
 #html-layer select,
 #html-layer #fullscreen-button {
   pointer-events: auto;
 }
 
-#html-layer.no-pointer-events input, 
-#html-layer.no-pointer-events button, 
-#html-layer.no-pointer-events label, 
-#html-layer.no-pointer-events a, 
+#html-layer.no-pointer-events input,
+#html-layer.no-pointer-events button,
+#html-layer.no-pointer-events label,
+#html-layer.no-pointer-events a,
 #html-layer.no-pointer-events select,
-#html-layer.no-pointer-events #fullscreen-button 
+#html-layer.no-pointer-events #fullscreen-button
 {
   pointer-events: none;
 }
@@ -135,7 +135,7 @@ a {
 
 #done-adding {
   position: absolute;
-  top: 590px;
+  top: 420px;
   right: 10px;
   left: 400px;
 }
@@ -203,7 +203,7 @@ a {
   top: 25%;
   left: 25%;
   padding: 57px;
-  
+
   background-color: white;
 }
 
@@ -240,7 +240,11 @@ a {
 }
 
 #thanks-block {
-  height: 670px;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #thanks-block-timeout {
