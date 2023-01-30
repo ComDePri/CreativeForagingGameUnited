@@ -9868,12 +9868,17 @@
 
                 if (timeSinceStart > MAX_SEARCH_TIME) {
                     if (inTraining) return;
+                    clearInterval(window.squareCountdown);
                     this.timesUp = true;
 
                     document.getElementById("add-shape").disabled = true;
+                    var self = this;
                     if (galleryShapes.length < 5) {
                         document.getElementById("stuck-message").style.display = "block";
-                        document.getElementById("thrown-out").addEventListener("click", this.onDoneSelection.bind(this));
+                        document.getElementById("throw-out").addEventListener("click", function (e) {
+                            return self.onDoneSelection();
+                        });
+                        // document.getElementById("thrown-out").addEventListener("click", this.onDoneSelection.bind(this));
                         document.getElementById("done-adding").style.display = "none";
                     } else {
                         document.getElementById("continue-message").style.display = "block";
@@ -10546,20 +10551,9 @@
                     redirectURL = `https://app.prolific.co/submissions/complete?cc=C135SBBZ`;
                 }
 
-                if (!showResults && (searchParams.has("followupLink") && (!localStorage.getItem('active')))) {
+                if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
                     document.getElementById("thanks-block-timeout").style.display = "none";
-
-                    if (expId === "ControlRoyG") {
-                        window.location.replace(redirectURL);
-                    }
-                } else if (!showResults) {
-                    document.getElementById("results-block").style.display = "none";
-                    document.getElementById("thanks-block").style.display = "none";
-
-                    if (expId === "ControlRoyG") {
-                        window.location.replace(redirectURL);
-                    }
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
                     document.getElementById("thanks-block").style.display = "none";
@@ -10608,20 +10602,20 @@
 
                     document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
 
-                    // Setup followup link
-                    if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
-                        var metricsId = redmetricsConnection.playerId || "";
-                        var userProvidedId = playerData.customData.userProvidedId || "";
+                }
+                // Setup followup link
+                if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
+                    var metricsId = redmetricsConnection.playerId || "";
+                    var userProvidedId = playerData.customData.userProvidedId || "";
 
-                        var link = searchParams.get("followupLink");
-                        if (!_.contains(link, "?")) link += "?";
-                        link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
-                        document.getElementById("followup-link").href = link;
-                    } else if (expId === "ControlRoyG") {
-                        window.location.replace(redirectURL);
-                    } else {
-                        document.getElementById("followup-link-container").style.display = "none";
-                    }
+                    var link = searchParams.get("followupLink");
+                    if (!_.contains(link, "?")) link += "?";
+                    link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
+                    document.getElementById("followup-link").href = link;
+                } else if (expId === "ControlRoyG") {
+                    window.location.replace(redirectURL);
+                } else {
+                    document.getElementById("followup-link-container").style.display = "none";
                 }
 
                 // Redirecting to a link after the experiment. This is different from the one above
