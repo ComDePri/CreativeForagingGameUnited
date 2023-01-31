@@ -9597,8 +9597,7 @@
                 document.getElementById("training-gui").style.display = "block";
                 document.getElementById("done-training-1").addEventListener("click", this.onDonePart1.bind(this));
                 document.getElementById("done-training-2").addEventListener("click", this.onDonePart2.bind(this));
-                document.getElementById("done-training-4").addEventListener("click", this.onDonePart3.bind(this));
-                document.getElementById("after-saving").addEventListener("click", this.onSavingFirstTime.bind(this));
+                document.getElementById("after-saving").addEventListener("click", this.onDonePart3.bind(this));
                 document.getElementById("done-training-3").addEventListener("click", function (e) {
                     _this3.done = true;
                     inTraining = false;
@@ -9656,17 +9655,8 @@
         }, {
             key: "onDonePart3",
             value: function onDonePart3() {
-                document.getElementById("training-5").style.display = "none";
-                document.getElementById("training-4").style.display = "block";
-            }
-        }, {
-            key: "onSavingFirstTime",
-            value: function onSavingFirstTime() {
                 document.getElementById("training-3").style.display = "none";
-                document.getElementById("training-5").style.display = "block";
-                this.blockScene.teardown();
-                this.blockScene.setup(true);
-                this.blockScene.off("addedShape", this.onAddedShape, this);
+                document.getElementById("training-4").style.display = "block";
             }
         }, {
             key: "onAddedShape",
