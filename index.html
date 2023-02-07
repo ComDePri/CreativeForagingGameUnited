@@ -78,21 +78,10 @@
           <div id="blocks-gui">
             <button id="add-shape">Collect Shape</button>
             <br><button id="done-adding">End Game</button>
-            <p id="square-countdown" class="hidden">60</p>
-
+            <p id="square-countdown" class="hidden">90</p>
             <p id="end-early-message" class="hidden">You need to collect at least 5 shapes to move to the next step</p>
-
-            <p id="stuck-message" class="vertical-align hidden">Ooops, time has run out!
-              <!--<br>You need to collect at least 5 shapes to continue. -->
-              <br><button id='throw-out'>Continue</button>
-              <!--<br>Please reload and try again-->
-            </p>
-
             <p id="continue-message" class="vertical-align hidden">Time's up!
-              <br>
-              <br>Press the button below to continue 
-              <br>
-              <br><button id="throw-out-2" class='hidden'>Continue</button>
+              <br><br>Press the button below to continue
             </p>
 
             <div id="modal-confirm-done" class="hidden">
@@ -105,8 +94,8 @@
 
             <div id="square-timeout-modal" class="hidden">
               <div id="square-timeout-box">
-              <p>You have not moved a block in the last minute. If you do not move a block in the next 10 seconds,
-                the game will end.</p>
+              <p>You have not made a move for over 90 seconds, contrary to the instructions to play continuously and undistracted.
+                <br>The game will now end and your participation in the study will be incomplete.</p>
               <button id="square-timeout-done-button">OK</button>
               </div>
             </div>

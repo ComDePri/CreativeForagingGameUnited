@@ -198,11 +198,11 @@ a {
 #modal-confirm-box,
 #square-timeout-box {
   position: absolute;
-  width: 320px;
-  height: 150px;
+  width: 400px;
+  height: 200px;
   top: 25%;
   left: 25%;
-  padding: 57px;
+  padding: 37px;
 
   background-color: white;
 }

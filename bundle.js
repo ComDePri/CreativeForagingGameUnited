@@ -9760,7 +9760,12 @@
                     // document.getElementById("square-countdown").style.display = "block";
                     this.startSquaresCountdown();
                 }
-                document.getElementById("square-timeout-done-button").addEventListener("click", this.squareTimeoutOkButton);
+
+                var self = this;
+                document.getElementById("square-timeout-done-button").addEventListener("click", function (e) {
+                    document.getElementById("square-timeout-modal").style.display = "none";
+                    return self.onDoneSelection();
+                });
             }
             /**
              * Starts countdown when the player is choosing a block. (Called after dropping a square)
@@ -9770,7 +9775,7 @@
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
                 if (!this.isTraining) {
-                    var squareCountdownValue = 60;
+                    var squareCountdownValue = 90;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
                         squareCountdownValue--;
@@ -9778,78 +9783,30 @@
                             document.getElementById("square-countdown").innerHTML = squareCountdownValue.toString();
                         } else {
                             clearInterval(window.squareCountdown);
-                            document.getElementById("square-countdown").innerHTML = "10";
+                            self.disableBlocks();
+                            this.timesUp = true;
+                            timerOK = false;
+                            document.getElementById("add-shape").disabled = true;
                             document.getElementById("square-timeout-modal").style.display = "block";
-                            self.startSecondTimer();
+                            localStorage.setItem('active', "results")
+                            document.getElementById("done-adding").style.display = "none";
                         }
                     }, 1000);
                 }
             }
-
-            /**
-             * Stops the countdown timer between choosing squares. (Called after choosing a square)
-             */
-
         }, {
             key: "stopSquaresCountdown",
             value: function stopSquaresCountdown() {
                 if (!this.isTraining) {
                     clearInterval(window.squareCountdown);
-                    document.getElementById("square-countdown").innerHTML = "60";
                 }
             }
-        }, {
-            key: "squareTimeoutOkButton",
-            value: function squareTimeoutOkButton() {
-                document.getElementById("square-timeout-modal").style.display = "none";
-            }
-
-            /**
-             * This starts the 10 seconds timer that is after the 60 seconds timer for choosing blocks.
-             */
-
         }, {
             key: "onDoneSelection",
             value: function onDoneSelection() {
                 sendTrigger("galleryDone");
                 this.skip = true;
                 return changeScene("results")
-            }
-        }, {
-            key: "startSecondTimer",
-            value: function startSecondTimer() {
-                if (!this.isTraining) {
-                    clearInterval(window.squareCountdown);
-                    var squareCountdownValue = 10;
-                    var self = this;
-                    window.squareCountdown = setInterval(function () {
-                        squareCountdownValue--;
-                        if (squareCountdownValue > 0) {
-                            document.getElementById("square-countdown").innerHTML = squareCountdownValue.toString();
-                        } else {
-                            clearInterval(window.squareCountdown);
-                            document.getElementById("square-timeout-modal").style.display = "none";
-                            self.disableBlocks();
-                            this.timesUp = true;
-                            timerOK = false;
-                            document.getElementById("add-shape").disabled = true;
-                            localStorage.setItem('active', "results")
-                            if (galleryShapes.length < 5) {
-                                document.getElementById("stuck-message").style.display = "block";
-                                document.getElementById("throw-out").addEventListener("click", function (e) {
-                                    return self.onDoneSelection();
-                                });
-                            } else {
-                                document.getElementById("continue-message").style.display = "block";
-                                document.getElementById("throw-out-2").style.display = 'block';
-                                document.getElementById("throw-out-2").addEventListener("click", function (e) {
-                                    return self.onDoneSelection();
-                                });
-                            }
-                            document.getElementById("done-adding").style.display = "none";
-                        }
-                    }, 1000);
-                }
             }
         }, {
             key: "update",
@@ -9862,18 +9819,8 @@
                     this.timesUp = true;
 
                     document.getElementById("add-shape").disabled = true;
-                    var self = this;
-                    if (galleryShapes.length < 5) {
-                        document.getElementById("stuck-message").style.display = "block";
-                        document.getElementById("throw-out").addEventListener("click", function (e) {
-                            return self.onDoneSelection();
-                        });
-                        // document.getElementById("thrown-out").addEventListener("click", this.onDoneSelection.bind(this));
-                        document.getElementById("done-adding").style.display = "none";
-                    } else {
-                        document.getElementById("continue-message").style.display = "block";
-                        document.getElementById("done-adding").style.display = "block";
-                    }
+                    document.getElementById("continue-message").style.display = "block";
+                    document.getElementById("done-adding").style.display = "block";
                 }
 
                 // Animate highlighted blocks
@@ -10277,7 +10224,11 @@
             key: "onAttemptDone",
             value: function onAttemptDone() {
                 if (this.timesUp || !allowEarlyExit) {
-                    this.confirmDone();
+                    if (galleryShapes.length < 5) {
+                        this.onDoneSelection();
+                    } else {
+                        this.confirmDone();
+                    }
                 } else if (galleryShapes.length < 5) {
                     document.getElementById("end-early-message").style.display = "block";
                 } else {
@@ -10538,14 +10489,15 @@
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                 var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm/?PROLIFIC_PID=${userId}`;
                 if (!timerOK) {
+                    document.getElementById("thanks-block").style.display = "none";
                     redirectURL = `https://app.prolific.co/submissions/complete?cc=C135SBBZ`;
+                } else {
+                    document.getElementById("thanks-block-timeout").style.display = "none";
                 }
 
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
-                    document.getElementById("thanks-block-timeout").style.display = "none";
                 } else {
-                    document.getElementById("thanks-block-timeout").style.display = "none";
                     document.getElementById("thanks-block").style.display = "none";
 
                     var slider = new PIXI.Sprite(app$1.loader.resources["images/slider.png"].texture);
