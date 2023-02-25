@@ -9775,7 +9775,7 @@
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
                 if (!this.isTraining) {
-                    var squareCountdownValue = 90;
+                    var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
                         squareCountdownValue--;
@@ -10223,6 +10223,8 @@
         }, {
             key: "onAttemptDone",
             value: function onAttemptDone() {
+                this.stopSquaresCountdown();
+
                 if (this.timesUp || !allowEarlyExit) {
                     if (galleryShapes.length < 5) {
                         this.onDoneSelection();
