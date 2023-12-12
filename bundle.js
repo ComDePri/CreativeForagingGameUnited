@@ -10489,10 +10489,10 @@
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_bNn8bm1u2H0OxWm/?PROLIFIC_PID=${userId}`;
+                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_8IhCeapbyuTnzo2/?PROLIFIC_PID=${userId}`;
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
-                    redirectURL = `https://app.prolific.co/submissions/complete?cc=C135SBBZ`;
+                    redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
                 }
