@@ -10436,7 +10436,7 @@
         }, {
             key: "updateDoneButton",
             value: function updateDoneButton() {
-                document.getElementById("done-selection").disabled = this.selectedIndexes.length < 5;
+                document.getElementById("done-selection").disabled = this.selectedIndexes.length < 1;
             }
         }, {
             key: "changePage",
