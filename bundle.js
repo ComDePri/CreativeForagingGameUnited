@@ -9371,7 +9371,8 @@
     }(Entity);
 
     var BLOCK_WIDTH = 50;
-    var MAX_SEARCH_TIME = 12 * 60 * 1000;
+    // var MAX_SEARCH_TIME = 12 * 60 * 1000;
+    var MAX_SEARCH_TIME = 60 * 1000; // change for testing
     var BLOCK_COLOR = 0x81e700;
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
@@ -10610,7 +10611,8 @@
     var searchParams = new URLSearchParams(window.location.search);
     var allowEarlyExit = searchParams.get("allowEarlyExit") === "true" || searchParams.get("allowEarlyExit") === "1";
     var showResults = searchParams.get("showResults") === "true" || searchParams.get("showResults") === "1";
-    var timerValue = searchParams.get("length");
+    // var timerValue = searchParams.get("length");
+    var timerValue = 1 // change for testing
 
     if (timerValue != null) {
         MAX_SEARCH_TIME = parseInt(timerValue) * 60 * 1000;
