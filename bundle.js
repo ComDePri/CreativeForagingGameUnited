@@ -9371,8 +9371,7 @@
     }(Entity);
 
     var BLOCK_WIDTH = 50;
-    // var MAX_SEARCH_TIME = 12 * 60 * 1000;
-    var MAX_SEARCH_TIME = 10 * 1000; // change for testing
+    var MAX_SEARCH_TIME = 12 * 60 * 1000;
     var BLOCK_COLOR = 0x81e700;
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
@@ -9776,7 +9775,7 @@
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
                 if (!this.isTraining) {
-                    var squareCountdownValue = 1000; // change to 1000 from 85 for testing
+                    var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
                         squareCountdownValue--;
@@ -9785,9 +9784,8 @@
                         } else {
                             clearInterval(window.squareCountdown);
                             self.disableBlocks();
-                            // TODO: uncomment after testing
-                            // this.timesUp = true; 
-                            // timerOK = false;
+                            this.timesUp = true; 
+                            timerOK = false;
                             document.getElementById("add-shape").disabled = true;
                             document.getElementById("square-timeout-modal").style.display = "block";
                             localStorage.setItem('active', "results")
@@ -10611,8 +10609,7 @@
     var searchParams = new URLSearchParams(window.location.search);
     var allowEarlyExit = searchParams.get("allowEarlyExit") === "true" || searchParams.get("allowEarlyExit") === "1";
     var showResults = searchParams.get("showResults") === "true" || searchParams.get("showResults") === "1";
-    // var timerValue = searchParams.get("length");
-    var timerValue = 1 // change for testing
+    var timerValue = searchParams.get("length");
 
     if (timerValue != null) {
         MAX_SEARCH_TIME = parseInt(timerValue) * 10 * 1000;
