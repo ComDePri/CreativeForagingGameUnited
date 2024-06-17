@@ -9775,7 +9775,7 @@
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
                 if (!this.isTraining) {
-                    var squareCountdownValue = 85;
+                    var squareCountdownValue = 1000; // change to 1000 from 85 for testing
                     var self = this;
                     window.squareCountdown = setInterval(function () {
                         squareCountdownValue--;
@@ -9784,8 +9784,9 @@
                         } else {
                             clearInterval(window.squareCountdown);
                             self.disableBlocks();
-                            this.timesUp = true;
-                            timerOK = false;
+                            // TODO: uncomment after testing
+                            // this.timesUp = true; 
+                            // timerOK = false;
                             document.getElementById("add-shape").disabled = true;
                             document.getElementById("square-timeout-modal").style.display = "block";
                             localStorage.setItem('active', "results")
@@ -10489,7 +10490,7 @@
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_8IhCeapbyuTnzo2/?PROLIFIC_PID=${userId}`;
+                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_9oeLnNKaGIMzyJg/?PROLIFIC_PID=${userId}`;
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
@@ -10556,7 +10557,7 @@
                     if (!_.contains(link, "?")) link += "?";
                     link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                     document.getElementById("followup-link").href = link;
-                } else if (expId === "ControlRoyG") {
+                } else if (expId === "ControlShir") {
                     window.location.replace(redirectURL);
                 } else {
                     document.getElementById("followup-link-container").style.display = "none";
