@@ -9372,7 +9372,7 @@
 
     var BLOCK_WIDTH = 50;
     // var MAX_SEARCH_TIME = 12 * 60 * 1000;
-    var MAX_SEARCH_TIME = 60 * 1000; // change for testing
+    var MAX_SEARCH_TIME = 10 * 1000; // change for testing
     var BLOCK_COLOR = 0x81e700;
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
@@ -10615,7 +10615,7 @@
     var timerValue = 1 // change for testing
 
     if (timerValue != null) {
-        MAX_SEARCH_TIME = parseInt(timerValue) * 60 * 1000;
+        MAX_SEARCH_TIME = parseInt(timerValue) * 10 * 1000;
         document.getElementById("game-length-sentence").innerHTML = "The game is " + parseInt(timerValue) + " minutes long.";
     }
 
