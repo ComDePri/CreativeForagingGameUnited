@@ -10489,7 +10489,8 @@
 
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                var redirectURL = `https://hujipsych.au1.qualtrics.com/jfe/form/SV_9oeLnNKaGIMzyJg/?PROLIFIC_PID=${userId}`;
+                const expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
+                var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}`;
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
