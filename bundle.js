@@ -10471,13 +10471,6 @@
         return GalleryScene;
     }(Entity);
 
-    var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-    var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
-    var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}`;
-
-    console.log("redirectURL", redirectURL)
-
-
     var ResultsScene = function (_util$Entity5) {
         inherits(ResultsScene, _util$Entity5);
 
@@ -10494,6 +10487,7 @@
 
                 document.getElementById("results-gui").style.display = "block";
 
+                var searchParams = new URLSearchParams(window.location.search);
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                 var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
