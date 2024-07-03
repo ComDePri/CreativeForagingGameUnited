@@ -10497,6 +10497,8 @@
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
                 }
+                console.log("redirectURL", redirectURL)
+
 
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
@@ -10558,6 +10560,7 @@
                     link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                     document.getElementById("followup-link").href = link;
                 } else if (expId === "ControlShir") {
+                    console.log("redirectURL", redirectURL)
                     window.location.replace(redirectURL);
                 } else {
                     document.getElementById("followup-link-container").style.display = "none";
