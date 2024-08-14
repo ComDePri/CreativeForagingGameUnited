@@ -9778,6 +9778,7 @@
                     var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
+                        // timer to check if the user made a move in the last 84 seconds
                         squareCountdownValue--;
                         if (squareCountdownValue > 0) {
                             document.getElementById("square-countdown").innerHTML = squareCountdownValue.toString();
@@ -10616,7 +10617,7 @@
     var timerValue = searchParams.get("length");
 
     if (timerValue != null) {
-        MAX_SEARCH_TIME = parseInt(timerValue) * 10 * 1000;
+        MAX_SEARCH_TIME = parseInt(timerValue) * 60 * 1000;
         document.getElementById("game-length-sentence").innerHTML = "The game is " + parseInt(timerValue) + " minutes long.";
     }
 
