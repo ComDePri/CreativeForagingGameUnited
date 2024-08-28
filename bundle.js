@@ -10560,8 +10560,7 @@
                     if (!_.contains(link, "?")) link += "?";
                     link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                     document.getElementById("followup-link").href = link;
-                } else if (expId === "ControlShir") {
-                    console.log("redirectURL", redirectURL)
+                } else if (expId) {
                     window.location.replace(redirectURL);
                 } else {
                     document.getElementById("followup-link-container").style.display = "none";
