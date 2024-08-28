@@ -10552,19 +10552,19 @@
 
                 }
                 // Setup followup link
-                if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
-                    var metricsId = redmetricsConnection.playerId || "";
-                    var userProvidedId = playerData.customData.userProvidedId || "";
+                // if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
+                //     var metricsId = redmetricsConnection.playerId || "";
+                //     var userProvidedId = playerData.customData.userProvidedId || "";
 
-                    var link = searchParams.get("followupLink");
-                    if (!_.contains(link, "?")) link += "?";
-                    link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
-                    document.getElementById("followup-link").href = link;
-                } else if (expId) {
-                    window.location.replace(redirectURL);
-                } else {
-                    document.getElementById("followup-link-container").style.display = "none";
-                }
+                //     var link = searchParams.get("followupLink");
+                //     if (!_.contains(link, "?")) link += "?";
+                //     link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
+                //     document.getElementById("followup-link").href = link;
+                // } else if (expId) {
+                window.location.replace(redirectURL);
+                // } else {
+                //     document.getElementById("followup-link-container").style.display = "none";
+                // }
 
                 // Redirecting to a link after the experiment. This is different from the one above
                 // because it doensn't have the parameters.
