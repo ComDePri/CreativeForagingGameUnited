@@ -10491,8 +10491,10 @@
                 var searchParams = new URLSearchParams(window.location.search);
                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
+                var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
+                var studId = searchParams.get("studId") || searchParams.get("studID") || "";
                 var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
-                var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}`;
+                var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID={studId}&SESSION_ID={sessId}`;
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
