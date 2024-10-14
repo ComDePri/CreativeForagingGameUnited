@@ -9527,7 +9527,7 @@
                 document.getElementById("user-provided-id").addEventListener("click", this.onSetUserProvidedId.bind(this));
 
                 this.done = false;
-                document.getElementById("done-intro").disabled = true;
+                document.getElementById("done-intro").disabled = false;
                 document.getElementById("done-intro").addEventListener("click", this.onDone.bind(this));
             }
         }, {
@@ -9544,7 +9544,7 @@
             key: "onSetUserProvidedId",
             value: function onSetUserProvidedId(e) {
                 // document.getElementById("done-intro").disabled = document.getElementById("user-provided-id").value.length === 0;
-                document.getElementById("done-intro").disabled = true;
+                document.getElementById("done-intro").disabled = false;
                 
                 // If enter key pressed
                 if (e.keyCode === 13 && !document.getElementById("done-intro").disabled) {
