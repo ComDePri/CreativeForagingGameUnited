@@ -9543,8 +9543,9 @@
         }, {
             key: "onSetUserProvidedId",
             value: function onSetUserProvidedId(e) {
-                document.getElementById("done-intro").disabled = document.getElementById("user-provided-id").value.length === 0;
-
+                // document.getElementById("done-intro").disabled = document.getElementById("user-provided-id").value.length === 0;
+                document.getElementById("done-intro").disabled = true;
+                
                 // If enter key pressed
                 if (e.keyCode === 13 && !document.getElementById("done-intro").disabled) {
                     this.onDone();
