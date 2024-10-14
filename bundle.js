@@ -9524,10 +9524,10 @@
             value: function setup() {
                 document.getElementById("intro-gui").style.display = "block";
 
-                document.getElementById("user-provided-id").addEventListener("keyup", this.onSetUserProvidedId.bind(this));
+                document.getElementById("user-provided-id").addEventListener("click", this.onSetUserProvidedId.bind(this));
 
                 this.done = false;
-                // document.getElementById("done-intro").disabled = true;
+                document.getElementById("done-intro").disabled = true;
                 document.getElementById("done-intro").addEventListener("click", this.onDone.bind(this));
             }
         }, {
