@@ -17,8 +17,8 @@
 
           <!-- screen 1 -->
           <div id="intro-gui">
-            <h1>Welcome to the game of shifting shapes</h1>
-            <p>Your goal is to discover interesting and beautiful shapes.</p>
+            <h1>Welcome to the Shapes Game!</h1>
+            <p>Your mission? To discover interesting and beautiful shapes.</p>
             <p>To continue, please enter your Prolific ID:</p>
             <br>
             <p><input id="user-provided-id"></p>
@@ -29,33 +29,36 @@
 
             <!-- screen 2 -->
             <div id="training-1">
-              <p>In this game you are going to explore the space of "shifting shapes"
-                <br>where there are many interesting and beautiful shapes to discover.
+              <p>🔍 What will you discover? You are going to explore the space of
+                <br>Shifting Shapes where there are many interesting and beautiful
+                <br>shapes to discover.
               </p>
-              <p>To discover these shapes you are going to be moving these green blocks on the screen</p>
+              <p>To discover these shapes you are going to be moving these green blocks on the screen.</p>
               <div class="bottom-text">
-                <p class="highlight">Drag the left-most or right-most block to a different place.</p>
+                <p class="highlight">Drag the left-most block to a different location.</p>
                 <br><button id="done-training-1" class="hidden">Next</button>
               </div>
             </div>
 
             <!-- screen 3 -->
             <div id="training-2" class="hidden">
-                <p>You can only move the blocks at the end or the edge of the shape</p>
-
+                <p>You can move any block provided that all blocks stay connected.<br>
+                  Move as many blocks as you like until you find a shape that is<br>
+                  interesting or beautiful to you.</p>
               ​<div class="bottom-text">
-                <p>but you can move as many blocks as you like
-                  <br>until you find a shape that is interesting and beautiful to you.​</p>
+                <p> ​</p>
                 <br><button id="done-training-2">Got it</button>
               </div>
             </div>
 
             <!-- screen 4 -->
             <div id="training-3" class="hidden">
-                <p>When you create a shape that you find interesting and beautiful
-                    <br>you can save it by clicking on the grey box
-                    <br>or the “Collect Shape” button</p>
+              <p>You can move any block provided that all blocks stay connected.<br>
+                Move as many blocks as you like until you find a shape that is<br>
+                interesting or beautiful to you.</p>
               <div class="bottom-text">
+                <p>When you create a shape that you find interesting or beautiful<br>
+                  you can save it to the gallery by clicking on the heart button.</p>
                 <p class="highlight" id="click-there-p">Click there now</p>
                 <button id="after-saving" class="hidden">Continue</button>
               </div>
@@ -63,20 +66,23 @@
 
             <!-- screen 5 -->
             <div id="training-4" class="hidden">
-              <p>When the game is over you will get to see all your
-                <br>interesting and beautiful shapes and pick your 5 favorite shapes
+              <p>When the game is over you will get to see all the shapes you saved to
+                <br>the gallery.
               </p>
               <div class="bottom-text">
-                <p id="game-length-sentence">The game is 12 minutes long.
-                    <br>Please play alone, in a quiet surroundings with no interruptions.
-                    <br><br>There is no specific goal in the game. Just play and have fun!
+                <p id="game-length-sentence">You have 12 minutes to play.
+                    <br>A few simple guidelines:
+                    <br>✅ There's no right and wrong way to play.
+                    <br>✅ Play alone, in a quiet surroundings.
+                    <br>✅ Most importantly – have fun!
                 </p>
                   <button id="done-training-3">Let's play</button>
               </div>
             </div>
           </div>
           <div id="blocks-gui">
-            <button id="add-shape">Collect Shape</button>
+            <button id="add-shape" style="font-size: 24px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji',emoji;">♥
+            </button>
             <br><button id="done-adding">End Game</button>
             <p id="square-countdown" class="hidden">85</p>
             <p id="end-early-message" class="hidden">You need to collect at least 5 shapes to move to the next step</p>
