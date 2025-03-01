@@ -18,7 +18,6 @@
           <!-- screen 1 -->
           <div id="intro-gui">
             <h1>Welcome to the Shapes Game!</h1>
-            <p>Your mission? To discover interesting and beautiful shapes.</p>
             <p>To continue, please enter your Prolific ID:</p>
             <br>
             <p><input id="user-provided-id"></p>
@@ -29,24 +28,25 @@
 
             <!-- screen 2 -->
             <div id="training-1">
-              <p>🔍 What will you discover? You are going to explore the space of
+              <p>Your mission? To discover interesting and beautiful shapes.</p>
+              <p>🔍 What will you discover? You are going to explore the land of
                 <br>Shifting Shapes where there are many interesting and beautiful
                 <br>shapes to discover.
               </p>
-              <p>To discover these shapes you are going to be moving these green blocks on the screen.</p>
               <div class="bottom-text">
-                <p class="highlight">Drag the left-most block to a different location.</p>
+                <p>You discover shapes by moving these green blocks on the screen.</p>
+                <p class="highlight">Drag the left-most block to a different location and then press next.</p>
                 <br><button id="done-training-1" class="hidden">Next</button>
               </div>
             </div>
 
             <!-- screen 3 -->
             <div id="training-2" class="hidden">
-                <p>You can move any block provided that all blocks stay connected.<br>
-                  Move as many blocks as you like until you find a shape that is<br>
-                  interesting or beautiful to you.</p>
+              <p>You can move any block provided that all blocks stay connected.</p>
               ​<div class="bottom-text">
                 <p> ​</p>
+                <p>In the game,You can move as many blocks as you like until you find a shape that is<br>
+                  interesting or beautiful to you.</p>
                 <br><button id="done-training-2">Got it</button>
               </div>
             </div>
@@ -58,7 +58,7 @@
                 interesting or beautiful to you.</p>
               <div class="bottom-text">
                 <p>When you find one, you can save it to the gallery by clicking <br>
-                  on the heart button.</p>
+                  the heart button.</p>
                 <p class="highlight" id="click-there-p">Click the heart button now.</p>
                 <button id="after-saving" class="hidden">Continue</button>
               </div>
@@ -66,19 +66,21 @@
 
             <!-- screen 5 -->
             <div id="training-4" class="hidden">
-              <p>When the game is over you will get to see all the shapes you saved to
-                <br>the gallery.
-              </p>
-              <div class="bottom-text">
-                <p id="game-length-sentence">You have 12 minutes to play.
-                    <br>A few simple guidelines:
-                    <br>✅ There's no right and wrong way to play.
-                    <br>✅ Play alone, in a quiet surroundings.
-                    <br>✅ Most importantly – have fun!
+              <div class="black-box">
+                <p>When the game is over you will get to see<br>all the shapes you saved to the gallery.</p>
+                <p id="game-length-sentence" style="text-align: left;">
+                  ✅ You have 12 minutes to play.<br>
+                  ✅ There's no right and wrong way to play.<br>
+                  ✅ Play alone, in a quiet surroundings<br>
+                  ✅ Most importantly – have fun!
                 </p>
+
+                <div class="bottom-text">
                   <button id="done-training-3">Let's play</button>
+                </div>
               </div>
             </div>
+
           </div>
           <div id="blocks-gui">
             <button id="add-shape" style="font-size: 24px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji',emoji;">🤍
@@ -163,5 +165,12 @@
   <script src="deps/redmetrics.js"></script>
 
   <script src="bundle.js"></script>
+  <script>
+    document.getElementById("add-shape").addEventListener("click", function() {
+      document.getElementById("after-saving").click(); // Simulate clicking the "Next" button
+    });
+  </script>
+
+
   </body>
 </html>

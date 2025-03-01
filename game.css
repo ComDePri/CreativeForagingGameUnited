@@ -23,6 +23,18 @@ button:disabled {
   border: 1px solid white;
 }
 
+.black-box {
+  background: black;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 60%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 p {
   color: white;
