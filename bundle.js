@@ -10681,6 +10681,32 @@
         return resizeGame(app$1);
     });
 
+
+    function showBlockOverlay() {
+        document.getElementById('block-overlay').classList.remove('hidden');
+    }
+
+// Function to hide the overlay when leaving training-3
+    function hideBlockOverlay() {
+        document.getElementById('block-overlay').classList.add('hidden');
+    }
+
+// When training-2 is done and training-3 appears
+    document.getElementById('done-training-2').addEventListener('click', function() {
+        // Small delay to ensure the transition to training-3 has completed
+        setTimeout(showBlockOverlay, 100);
+    });
+
+// When the heart button is clicked and we move to training-4
+    document.getElementById('after-saving').addEventListener('click', function() {
+        hideBlockOverlay();
+    });
+
+// For safety, also ensure overlay is hidden after training is complete
+    document.getElementById('done-training-3').addEventListener('click', function() {
+        hideBlockOverlay();
+    });
+
 // // Debugging code
 // for(let i = 0; i < 120; i++) {
 //   galleryShapes.push([{"x":1,"y":0},{"x":2,"y":0},{"x":3,"y":0},{"x":4,"y":0},{"x":5,"y":0},{"x":6,"y":0},{"x":7,"y":0},{"x":8,"y":0},{"x":9,"y":0},{"x":1,"y":-1}]);
