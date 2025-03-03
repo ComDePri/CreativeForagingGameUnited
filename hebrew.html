@@ -12,13 +12,13 @@
     <div id="game-container"> 
       <canvas id="pixi-canvas"></canvas>
 
-      <div id="html-layer">
-        <div id="sections"  dir="rtl">
+      <div id="html-layer" dir="rtl">
+        <div id="sections">
 
           <!-- screen 1 -->
           <div id="intro-gui">
             <h1>ברוכים הבאים למשחק הצורות המשתנות!</h1>
-            <p>הכנס מזהה משתמש:</p>
+            <p>הכנס מזהה משחק:</p>
             <br>
             <p><input id="user-provided-id"></p>
             <br><button id="done-intro">המשך</button></p>
@@ -84,61 +84,61 @@
             </button>
             <br><button id="done-adding">End Game</button>
             <p id="square-countdown" class="hidden">85</p>
-            <p id="end-early-message" class="hidden">You need to collect at least 5 shapes to move to the next step</p>
-            <p id="continue-message" class="vertical-align hidden">Time's up!
-              <br><br>Press the button below to continue
+            <p id="end-early-message" class="hidden">צריך לאסוף לפחות 5 צורות כדי לעבור לשלב הבא</p>
+            <p id="continue-message" class="vertical-align hidden">אופס, הזמן נגמר!
+              <br><br>לחצו על הלחצן למטה כדי להמשיך
             </p>
 
             <div id="modal-confirm-done" class="hidden">
               <div id="modal-confirm-box">
-              <p>Are you sure you want to end now?</p>
-              <button id="modal-confirm-cancel-button">Return to game</button>
-              <button id="modal-confirm-done-button">End game</button>
+              <p>בטוחים שתרצו לסיים עכשיו?</p>
+              <button id="modal-confirm-cancel-button">חזור למשחק</button>
+              <button id="modal-confirm-done-button">סיים</button>
               </div>
             </div>
 
             <div id="square-timeout-modal" class="hidden">
               <div id="square-timeout-box">
-              <p>You have not made a move for over 90 seconds, contrary to the instructions to play continuously and undistracted.
-                <br>The game will now end and your participation in the study will be incomplete.</p>
-              <button id="square-timeout-done-button">OK</button>
+              <p>לא ביצעת מהלך יותר מ-90 שניות, בניגוד להוראות
+                <br>המשחק יסתיים כעת.</p>
+              <button id="square-timeout-done-button">אישור</button>
               </div>
             </div>
           </div>
           <div id="selection-gui">
-            <p id="gallery-instructions">Please choose the 5 most creative shapes among the shapes you saved.
+            <p id="gallery-instructions">בחרו את 5 הצורות המעניינות ביותר מבין הצורות ששמרתם
             </p>
-            <button id="done-selection">Done</button>
-            <button id="previous-page-button">Previous page</button>
-            <button id="next-page-button">Next page</button>
+            <button id="done-selection">אנא קרא לנסיין</button>
+            <button id="previous-page-button">עמוד קודם</button>
+            <button id="next-page-button">עמוד הבא</button>
           </div>
           <div id="results-gui">
             <div id="results-block">
-              <h1>Results</h1>
+              <h1>תוצאות</h1>
               <div id="results-text" class="bottom-text">
-                <p id="rapid-search-text" class="hidden"> 
-                    Our study shows that creative search is a trade-off between novelty and value. 
-                    <br>Your playing method suggests that you are <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> more inclined toward <span class="highlight">rapid and spreading</span>
-                    searches which result in higher visual novelty. 
-                    In this kind of search, players tend to move rapidly between shapes, creating many shapes which spread across many different visual categories. 
-                    This search strategy usually produces shapes that are more unique in our game.
-                  </p>
-                  <p id="focused-search-text" class="hidden">
-                    Our study shows that creative search is a trade-off between novelty and value.
-                    <br>Your playing method suggests that you are <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> inclined toward <span class="highlight">focused and thoughtful searches</span> which result in higher visual value. 
-                    In this kind of search, players tend to focus on each visual category they discover, collecting thoughtfully
-                    shapes at increasing visual consensus. 
-                    This search strategy usually produces shapes that carry more meaning in our game.
-                  </p>
+                <p id="rapid-search-text" class="hidden">
+                  המחקר שלנו מראה שחיפוש יצירתי הוא טרייד-אוף בין חדשנות למשמעות
+                  <br>שיטת המשחק שלך מרמזת שאתה <span class="highlight"><span class="searchScorePercent highlight"></span>%</span>נוטה יותר לכיוון חיפוש שהוא <span class="highlight">מהיר ומתרחב.</span>
+                  בסוג זה של חיפוש, שחקנים נוטים לנוע במהירות בין צורות, ויוצרים צורות רבות אשר שייכות לקטגוריות ויזואליות שונות.
+                  אסטרטגיית חיפוש זו בדרך כלל מייצרת צורות ייחודיות יותר במשחק שלנו
+                </p>
+                <p id="focused-search-text" class="hidden">
+                  המחקר שלנו מראה שחיפוש יצירתי הוא טרייד-אוף בין חדשנות למשמעות
+                  <br>שיטת המשחק שלך מרמזת שאתה <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> נוטה יותר לכיוון חיפוש שהוא <span class="highlight">ממוקד ובעל עומק.</span>
+                  אשר תוצאתו משמעות חזותית גבוהה יותר.
+                  בסוג זה של חיפוש, שחקנים נוטים להתמקד בכל קטגוריה חזותית שהם מגלים, ע"י איסוף צורות שהושקע בהן הרבה מחשבה
+                  ונמצאות בקונצנזוס.
+                  אסטרטגיית חיפוש זו בדרך כלל מייצרת צורות שנושאות יותר משמעות במשחק שלנו.
+                </p>
 
-                <p><br>Your game ID is: <br><br><span class="code" id="code"></span></p>
+                <p><br>מזהה המשחק שלך: <br><br><span class="code" id="code"></span></p>
 
-                <p id="followup-link-container">To complete the experiment, <a id="followup-link" href="">please follow this link</a>.</p>
+                <p id="followup-link-container">על מנת להשלים את הניסוי,<a id="followup-link" href="">אנא עקוב אחר קישור זה</a>.</p>
               </div>
           </div>
 
           <div id="thanks-block">
-            <h1 class="vertical-align">Thanks for playing!</h1>
+            <h1 class="vertical-align">תודה ששיחקת!</h1>
           </div>
           <div id="thanks-block-timeout">
             <h1 class="vertical-align">Session timed-out.</h1>
