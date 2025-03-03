@@ -11,7 +11,7 @@ button {
   font-size: 0.7em;
   cursor: pointer;
   position: relative;
-  border-radius: 10px; /* More rounded */
+  border-radius: 10px;
 }
 
 button:hover {
