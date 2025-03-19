@@ -1,5 +1,5 @@
 let KEYBOARD_CONTROL = false;
-let AUTO_START = false;
+let AUTO_START = true;
 let TIMEOUT = true;
 let RM2 = false;
 
@@ -9,8 +9,8 @@ function readUrl() {
     if (urlParams.get('kb_control') === "1") {
         KEYBOARD_CONTROL = true;
     }
-    if (urlParams.get('auto_start') === "1") {
-        AUTO_START = true;
+    if (urlParams.get('no_autostart') === "1") {
+        AUTO_START = false;
     }
     if (urlParams.get('no_timeout') === "1") {
         TIMEOUT = false;
