@@ -9568,6 +9568,8 @@
         return IntroScene;
     }(Entity);
 
+    var part1done = false;
+
     var TrainingScene = function (_util$Entity2) {
         inherits(TrainingScene, _util$Entity2);
 
@@ -9631,6 +9633,7 @@
             value: function onDroppedBlock() {
                 if (this.didDropBlock) return;
 
+                console.log("Dropped block");
                 this.didDropBlock = true;
                 this.blockScene.highlightMovableBlocks();
 
@@ -9641,6 +9644,7 @@
             value: function onDonePart1() {
                 document.getElementById("training-1").style.display = "none";
                 document.getElementById("training-2").style.display = "block";
+                part1done = true;
             }
         }, {
             key: "onDonePart2",
@@ -10090,6 +10094,11 @@
             value: function dropBlock(block, droppedPos) {
                 // Find closest grid position
                 var gridPos = pixelPosToGridPos(droppedPos);
+                console.log("drop block");
+                if(part1done){
+                    console.log("part1done");
+                    this.unhighlightMovableBlocks();
+                }
 
                 var freeGridPositions = this.findFreeGridPositions();
                 var closestGridPos = _.min(freeGridPositions, function (freePos) {
