@@ -10048,7 +10048,7 @@ x
                 if (!isNaN(parseInt(e.key))) {
                     var keyValue = parseInt(e.key);
                     if (KEYBOARD_CONTROL &&
-                        (keyValue === 1 || keyValue === 2 || keyValue === 3 || keyValue === 4  || keyValue === 5 )) {
+                        (keyValue === 1 || keyValue === 2)) {
                         const addButton = document.getElementById("add-shape");
                         if (addButton) {
                             addButton.click();  // Trigger the button's click event
