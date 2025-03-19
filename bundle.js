@@ -2,6 +2,7 @@ let KEYBOARD_CONTROL = false;
 let AUTO_START = true;
 let TIMEOUT = true;
 let RM2 = false;
+let FULL_SCREEN = false;
 
 function readUrl() {
     const urlParams = new URL(location.href).searchParams;
@@ -9180,14 +9181,17 @@ function readUrl() {
         } else if (element.msRequestFullscreen) {
             element.msRequestFullscreen();
         }
+        FULL_SCREEN = true;
     }
 
     function exitFullscreen() {
         if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); else if (document.mozCancelFullScreen) document.mozCancelFullScreen(); else if (document.msExitFullscreen) document.msExitFullscreen();
+        FULL_SCREEN = false;
     }
 
     function inFullscreen() {
         return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullScreenElement;
+x
     }
 
     var Entity = function (_PIXI$utils$EventEmit) {
@@ -10154,7 +10158,8 @@ function readUrl() {
                         startPosition: pointToArray(this.draggingBlockStartGridPosition),
                         endPosition: pointToArray(closestGridPos),
                         time: Date.now() - this.startDragTime,
-                        newShape: convertShapeToArray(this.blockGrid)
+                        newShape: convertShapeToArray(this.blockGrid),
+                        fullScreen: FULL_SCREEN
                     }
                 });
             }
@@ -10264,7 +10269,9 @@ function readUrl() {
                     type: "added shape to gallery",
                     customData: {
                         shape: convertShapeToArray(this.blockGrid),
-                        timeSinceLastMouseUp: Date.now() - this.lastMouseUpTime
+                        timeSinceLastMouseUp: Date.now() - this.lastMouseUpTime,
+                        fullScreen: FULL_SCREEN
+
                     }
                 });
                 this.startSquaresCountdown();
@@ -10479,7 +10486,9 @@ function readUrl() {
                     customData: {
                         shapeIndex: shapeIndex,
                         shape: convertShapeToArray(galleryShapes[shapeIndex]),
-                        isSelected: isSelected
+                        isSelected: isSelected,
+                        fullScreen: FULL_SCREEN
+
                     }
                 });
             }
@@ -10511,7 +10520,9 @@ function readUrl() {
                     type: "done selection",
                     customData: {
                         shapeIndices: this.selectedIndexes,
-                        shapes: selectedShapes
+                        shapes: selectedShapes,
+                        fullScreen: FULL_SCREEN
+
                     }
                 });
 
