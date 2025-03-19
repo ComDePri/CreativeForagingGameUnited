@@ -1,3 +1,25 @@
+let KEYBOARD_CONTROL = false;
+let AUTO_START = false;
+let TIMEOUT = true;
+let RM2 = false;
+
+function readUrl() {
+    const urlParams = new URL(location.href).searchParams;
+
+    if (urlParams.get('kb_control') === "1") {
+        KEYBOARD_CONTROL = true;
+    }
+    if (urlParams.get('auto_start') === "1") {
+        AUTO_START = true;
+    }
+    if (urlParams.get('no_timeout') === "1") {
+        TIMEOUT = false;
+    }
+    if (urlParams.get('rm2') === "1") {
+        RM2 = true;
+    }
+}
+
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
         typeof define === 'function' && define.amd ? define(factory) :
@@ -9529,6 +9551,8 @@
                 this.done = false;
                 document.getElementById("done-intro").disabled = false;
                 document.getElementById("done-intro").addEventListener("click", this.onDone.bind(this));
+
+                readUrl();
             }
         }, {
             key: "teardown",
@@ -9602,10 +9626,24 @@
                 document.getElementById("done-training-2").addEventListener("click", this.onDonePart2.bind(this));
                 document.getElementById("after-saving").addEventListener("click", this.onDonePart3.bind(this));
                 document.getElementById("done-training-3").addEventListener("click", function (e) {
-                    _this3.done = true;
-                    inTraining = false;
-                    sceneStartedAt = Date.now();
-                    sendTrigger("startGame");
+                    document.getElementById("done-training-3").disabled = true;
+
+                    function startGame(){
+                        document.removeEventListener("keydown", waitForKeyPress); // Remove listener after key press
+                        _this3.done = true;
+                        inTraining = false;
+                        sceneStartedAt = Date.now();
+                        sendTrigger("startGame");
+                    }
+
+                    if(AUTO_START) {startGame();}
+
+                    function waitForKeyPress(event) {
+                        if (event.key === "5") {startGame();}
+                    }
+
+                    document.addEventListener("keydown", waitForKeyPress);
+
                 });
             }
         }, {
@@ -9632,8 +9670,6 @@
             key: "onDroppedBlock",
             value: function onDroppedBlock() {
                 if (this.didDropBlock) return;
-
-                console.log("Dropped block");
                 this.didDropBlock = true;
                 this.blockScene.highlightMovableBlocks();
 
@@ -9752,6 +9788,7 @@
                 this.cancelModal = this.cancelModal.bind(this);
                 this.confirmDone = this.confirmDone.bind(this);
                 document.getElementById("add-shape").addEventListener("click", this.onAddShape);
+                document.addEventListener("keyup", this.onKeyUp.bind(this));
                 document.getElementById("modal-confirm-cancel-button").addEventListener("click", this.cancelModal);
                 document.getElementById("modal-confirm-done-button").addEventListener("click", this.confirmDone);
 
@@ -9779,7 +9816,7 @@
         }, {
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
-                if (!this.isTraining) {
+                if (!this.isTraining && TIMEOUT) {
                     var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
@@ -9865,7 +9902,7 @@
             value: function teardown() {
                 sceneLayer.removeChild(this.container);
                 document.getElementById("blocks-gui").style.display = "none";
-
+                document.removeEventListener("keyup", this.onKeyUp);
                 document.getElementById("add-shape").removeEventListener("click", this.onAddShape);
                 document.getElementById("done-adding").removeEventListener("click", this.onAttemptDone);
                 document.getElementById("modal-confirm-cancel-button").removeEventListener("click", this.cancelModal);
@@ -10006,8 +10043,12 @@
                 // If they pressed a number key, add the shape
                 if (!isNaN(parseInt(e.key))) {
                     var keyValue = parseInt(e.key);
-                    if (keyValue == 1 || keyValue == 2) {
-                        this.onAddShape();
+                    if (KEYBOARD_CONTROL &&
+                        (keyValue === 1 || keyValue === 2 || keyValue === 3 || keyValue === 4  || keyValue === 5 )) {
+                        const addButton = document.getElementById("add-shape");
+                        if (addButton) {
+                            addButton.click();  // Trigger the button's click event
+                        }
                     }
                 }
             }
@@ -10094,9 +10135,7 @@
             value: function dropBlock(block, droppedPos) {
                 // Find closest grid position
                 var gridPos = pixelPosToGridPos(droppedPos);
-                console.log("drop block");
                 if(part1done){
-                    console.log("part1done");
                     this.unhighlightMovableBlocks();
                 }
 

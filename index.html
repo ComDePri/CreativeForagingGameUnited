@@ -1,15 +1,11 @@
 <script>
-    // Get URL parameters
     const params = new URLSearchParams(window.location.search);
     const lang = params.get("lang");
 
     // Redirect or change content based on language
     if (lang === "he") {
-        window.location.href = "hebrew.html";
-    } else if (lang === "en") {
-        window.location.href = "english.html";
+        window.location.href = "hebrew.html" + window.location.search;
     } else {
-        // Default language (optional)
-        window.location.href = "english.html";
+        window.location.href = "english.html" + window.location.search;
     }
 </script>
