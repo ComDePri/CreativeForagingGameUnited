@@ -9402,7 +9402,7 @@ x
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
     var RED_METRICS_HOST = "api.creativeforagingtask.com";
-    var RED_METRICS_GAME_VERSION = "dff09f30-f1ca-406a-aff0-7eff70f2563d";
+    var RED_METRICS_GAME_VERSION = "27c3c192-21c2-4452-bd4e-051b4634aa95";
 
     var inTraining = true;
 
