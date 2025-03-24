@@ -7,16 +7,16 @@ let FULL_SCREEN = false;
 function readUrl() {
     const urlParams = new URL(location.href).searchParams;
 
-    if (urlParams.get('kb_control') === "1") {
+    if (urlParams.get('kbControl') === "true") {
         KEYBOARD_CONTROL = true;
     }
-    if (urlParams.get('no_autostart') === "1") {
+    if (urlParams.get('extTrigger') === "true") {
         AUTO_START = false;
     }
-    if (urlParams.get('no_timeout') === "1") {
+    if (urlParams.get('noTimeout') === "true") {
         TIMEOUT = false;
     }
-    if (urlParams.get('rm2') === "1") {
+    if (urlParams.get('rm2') === "true") {
         RM2 = true;
     }
 }
@@ -9402,7 +9402,10 @@ x
     var HIGHLIGHTED_BLOCK_COLOR = 0x59853b;
     var DRAG_HIGHLIGHT_PERIOD = 500;
     var RED_METRICS_HOST = "api.creativeforagingtask.com";
-    var RED_METRICS_GAME_VERSION = "27c3c192-21c2-4452-bd4e-051b4634aa95";
+    var RED_METRICS_GAME_VERSION = "dff09f30-f1ca-406a-aff0-7eff70f2563d";
+    var RM2_PROTOCOL = "https";
+    var RM2_HOST = "api.creativeforagingtask.com";
+    var RM2_DEFAULT_API_KEY = "9af6823d-c77a-4ea9-9ea2-ac12dbf8c07f";
 
     var inTraining = true;
 
@@ -10714,14 +10717,31 @@ x
 
     var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
 
-    redmetricsConnection = redmetrics.prepareWriteConnection({
-        host: RED_METRICS_HOST,
-        gameVersionId: gameVersionId,
-        player: playerData
-    });
-    redmetricsConnection.connect().then(function () {
-        console.log("Connected to the RedMetrics server");
-    });
+    if (RM2) {
+        redmetricsConnection = redmetrics.prepareWriteConnection({
+            host: RED_METRICS_HOST,
+            gameVersionId: gameVersionId,
+            player: playerData
+        });
+
+        redmetricsConnection.connect().then(function () {
+            console.log("Connected to the RedMetrics server");
+        });
+
+    } else {
+        redmetricsConnection = new rm2.WriteConnection({
+            protocol: RM2_PROTOCOL,
+            host: RM2_HOST,
+            apiKey: searchParams.get("apiKey") || RM2_DEFAULT_API_KEY,
+            session: playerData
+        });
+        redmetricsConnection.connect().then(function () {
+            console.log("Connected to RM2");
+            showRedMetricsStatus("connected");
+        }).catch(function () {
+            showRedMetricsStatus("disconnected");
+        });
+    }
 
 // Connect to parallel port via Mister P
     var webSocketScheme = window.location.protocol === "https:" ? "wss" : "ws";
@@ -10772,3 +10792,5 @@ x
 // }
 
 })));
+
+
