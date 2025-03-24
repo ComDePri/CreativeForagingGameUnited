@@ -7,13 +7,13 @@ let FULL_SCREEN = false;
 function readUrl() {
     const urlParams = new URL(location.href).searchParams;
 
-    if (urlParams.get('kb_control') === "1") {
+    if (urlParams.get('kbControl') === "true") {
         KEYBOARD_CONTROL = true;
     }
-    if (urlParams.get('no_autostart') === "1") {
+    if (urlParams.get('extStart') === "true") {
         AUTO_START = false;
     }
-    if (urlParams.get('no_timeout') === "1") {
+    if (urlParams.get('noTimeout') === "1") {
         TIMEOUT = false;
     }
     if (urlParams.get('rm2') === "1") {
@@ -9403,6 +9403,10 @@ x
     var DRAG_HIGHLIGHT_PERIOD = 500;
     var RED_METRICS_HOST = "api.creativeforagingtask.com";
     var RED_METRICS_GAME_VERSION = "dff09f30-f1ca-406a-aff0-7eff70f2563d";
+    var RM2_PROTOCOL = "https";
+    var RM2_HOST = "api.creativeforagingtask.com";
+    var RM2_DEFAULT_API_KEY = "9af6823d-c77a-4ea9-9ea2-ac12dbf8c07f";
+
 
     var inTraining = true;
 
@@ -9582,15 +9586,24 @@ x
         }, {
             key: "onDone",
             value: function onDone() {
-                // go full screen
-                requestFullscreen(document.getElementById("game-parent"));
-                showFullscreenIcon(false);
 
-                // register provided ID
-                playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
-                redmetricsConnection.updatePlayer(playerData);
+                if(searchParams.get("rm2") === "true"){
+                    playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
+                    redmetricsConnection.updateSession(playerData);
 
-                this.done = true;
+                    this.done = true;
+
+                } else {
+                    // go full screen
+                    requestFullscreen(document.getElementById("game-parent"));
+                    showFullscreenIcon(false);
+
+                    // register provided ID
+                    playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
+                    redmetricsConnection.updatePlayer(playerData);
+
+                    this.done = true;
+                }
             }
         }]);
         return IntroScene;
@@ -10703,17 +10716,62 @@ x
     app$1.loader.add(["images/slider.png"]).on("progress", loadProgressHandler).load(setup);
 
 // Load RedMetrics
-    var playerData = {
-        externalId: searchParams.get("userId") || searchParams.get("userID"),
-        customData: {
-            expId: searchParams.get("expId") || searchParams.get("expID"),
-            userId: searchParams.get("userId") || searchParams.get("userID"),
-            userAgent: navigator.userAgent
+
+function showRedMetricsStatus(status) {
+    var _iteratorNormalCompletion9 = true;
+    var _didIteratorError9 = false;
+    var _iteratorError9 = undefined;
+
+    try {
+        for (var _iterator9 = document.getElementById("redmetrics-connection-status").children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+            var child = _step9.value;
+
+            var shouldShow = child.id === "redmetrics-connection-status-" + status;
+            child.style.display = shouldShow ? "block" : "none";
         }
-    };
+    } catch (err) {
+        _didIteratorError9 = true;
+        _iteratorError9 = err;
+    } finally {
+        try {
+            if (!_iteratorNormalCompletion9 && _iterator9.return) {
+                _iterator9.return();
+            }
+        } finally {
+            if (_didIteratorError9) {
+                throw _iteratorError9;
+            }
+        }
+    }
+}
 
-    var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
+var playerData = {
+    externalId: searchParams.get("userId") || searchParams.get("userID"),
+    customData: {
+        expId: searchParams.get("expId") || searchParams.get("expID"),
+        userId: searchParams.get("userId") || searchParams.get("userID"),
+        userAgent: navigator.userAgent
+    }
+};
 
+var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
+
+if(searchParams.get("rm2") === "true"){
+
+    redmetricsConnection = new rm2.WriteConnection({
+        protocol: RM2_PROTOCOL,
+        host: RM2_HOST,
+        apiKey: searchParams.get("apiKey") || RM2_DEFAULT_API_KEY,
+        session: playerData
+    });
+    redmetricsConnection.connect().then(function () {
+        console.log("Connected to RM2");
+        showRedMetricsStatus("connected");
+    }).catch(function () {
+        showRedMetricsStatus("disconnected");
+    });
+
+} else {
     redmetricsConnection = redmetrics.prepareWriteConnection({
         host: RED_METRICS_HOST,
         gameVersionId: gameVersionId,
@@ -10722,6 +10780,7 @@ x
     redmetricsConnection.connect().then(function () {
         console.log("Connected to the RedMetrics server");
     });
+}
 
 // Connect to parallel port via Mister P
     var webSocketScheme = window.location.protocol === "https:" ? "wss" : "ws";
