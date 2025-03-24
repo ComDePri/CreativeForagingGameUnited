@@ -1,9 +1,9 @@
 <script>
     const params = new URLSearchParams(window.location.search);
-    const lang = params.get("lang");
+    const lang = params.get("hebrew");
 
     // Redirect or change content based on language
-    if (lang === "he") {
+    if (lang === "true") {
         window.location.href = "hebrew.html" + window.location.search;
     } else {
         window.location.href = "english.html" + window.location.search;
