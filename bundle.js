@@ -9573,7 +9573,7 @@ x
             value: function onSetUserProvidedId(e) {
                 document.getElementById("done-intro").disabled = document.getElementById("user-provided-id").value.length === 0;
                 // document.getElementById("done-intro").disabled = false;
-                
+
                 // If enter key pressed
                 if (e.keyCode === 13 && !document.getElementById("done-intro").disabled) {
                     this.onDone();
@@ -9831,7 +9831,7 @@ x
                         } else {
                             clearInterval(window.squareCountdown);
                             self.disableBlocks();
-                            this.timesUp = true; 
+                            this.timesUp = true;
                             timerOK = false;
                             document.getElementById("add-shape").disabled = true;
                             document.getElementById("square-timeout-modal").style.display = "block";
@@ -10717,7 +10717,7 @@ x
     redmetricsConnection = redmetrics.prepareWriteConnection({
         host: RED_METRICS_HOST,
         gameVersionId: gameVersionId,
-        player: playerDatav
+        player: playerData
     });
     redmetricsConnection.connect().then(function () {
         console.log("Connected to the RedMetrics server");
