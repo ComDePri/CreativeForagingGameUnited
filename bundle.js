@@ -10717,7 +10717,7 @@ x
     redmetricsConnection = redmetrics.prepareWriteConnection({
         host: RED_METRICS_HOST,
         gameVersionId: gameVersionId,
-        player: playerData
+        player: playerDatav
     });
     redmetricsConnection.connect().then(function () {
         console.log("Connected to the RedMetrics server");
