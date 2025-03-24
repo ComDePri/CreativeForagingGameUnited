@@ -13,10 +13,10 @@ function readUrl() {
     if (urlParams.get('extStart') === "true") {
         AUTO_START = false;
     }
-    if (urlParams.get('noTimeout') === "1") {
+    if (urlParams.get('noTimeout') === "true") {
         TIMEOUT = false;
     }
-    if (urlParams.get('rm2') === "1") {
+    if (urlParams.get('rm2') === "true") {
         RM2 = true;
     }
 }
