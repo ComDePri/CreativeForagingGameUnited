@@ -7,16 +7,16 @@ let FULL_SCREEN = false;
 function readUrl() {
     const urlParams = new URL(location.href).searchParams;
 
-    if (urlParams.get('kbControl') === "true") {
+    if (urlParams.get('kb_control') === "1") {
         KEYBOARD_CONTROL = true;
     }
-    if (urlParams.get('extTrigger') === "true") {
+    if (urlParams.get('no_autostart') === "1") {
         AUTO_START = false;
     }
-    if (urlParams.get('noTimeout') === "true") {
+    if (urlParams.get('no_timeout') === "1") {
         TIMEOUT = false;
     }
-    if (urlParams.get('rm2') === "true") {
+    if (urlParams.get('rm2') === "1") {
         RM2 = true;
     }
 }
@@ -9403,9 +9403,6 @@ x
     var DRAG_HIGHLIGHT_PERIOD = 500;
     var RED_METRICS_HOST = "api.creativeforagingtask.com";
     var RED_METRICS_GAME_VERSION = "dff09f30-f1ca-406a-aff0-7eff70f2563d";
-    var RM2_PROTOCOL = "https";
-    var RM2_HOST = "api.creativeforagingtask.com";
-    var RM2_DEFAULT_API_KEY = "9af6823d-c77a-4ea9-9ea2-ac12dbf8c07f";
 
     var inTraining = true;
 
@@ -10717,31 +10714,14 @@ x
 
     var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
 
-    if (RM2) {
-        redmetricsConnection = redmetrics.prepareWriteConnection({
-            host: RED_METRICS_HOST,
-            gameVersionId: gameVersionId,
-            player: playerData
-        });
-
-        redmetricsConnection.connect().then(function () {
-            console.log("Connected to the RedMetrics server");
-        });
-
-    } else {
-        redmetricsConnection = new rm2.WriteConnection({
-            protocol: RM2_PROTOCOL,
-            host: RM2_HOST,
-            apiKey: searchParams.get("apiKey") || RM2_DEFAULT_API_KEY,
-            session: playerData
-        });
-        redmetricsConnection.connect().then(function () {
-            console.log("Connected to RM2");
-            showRedMetricsStatus("connected");
-        }).catch(function () {
-            showRedMetricsStatus("disconnected");
-        });
-    }
+    redmetricsConnection = redmetrics.prepareWriteConnection({
+        host: RED_METRICS_HOST,
+        gameVersionId: gameVersionId,
+        player: playerData
+    });
+    redmetricsConnection.connect().then(function () {
+        console.log("Connected to the RedMetrics server");
+    });
 
 // Connect to parallel port via Mister P
     var webSocketScheme = window.location.protocol === "https:" ? "wss" : "ws";
