@@ -14,7 +14,7 @@ function readUrl() {
     if (urlParams.get('extStart') === "true") {
         AUTO_START = false;
     }
-    if (urlParams.get('Prolific') === "true") {
+    if (urlParams.get('prolific') === "true") {
         PROLIFIC = true;
     }
     if (urlParams.get('rm2') === "true") {
