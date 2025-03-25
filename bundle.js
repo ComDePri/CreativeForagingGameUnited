@@ -10568,10 +10568,9 @@ x
                 var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
                 var studId = searchParams.get("studId") || searchParams.get("studID") || "";
                 var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
+                var redirectURL = expUrl
                 if(PROLIFIC) {
-                    var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
-                } else {
-                    var redirectURL = expUrl
+                    redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
                 }
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
@@ -10579,7 +10578,6 @@ x
                 } else {
                     document.getElementById("thanks-block-timeout").style.display = "none";
                 }
-
 
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
