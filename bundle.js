@@ -1,7 +1,8 @@
 let KEYBOARD_CONTROL = false;
 let AUTO_START = true;
-let TIMEOUT = true;
+let PROLIFIC = false;
 let RM2 = false;
+
 let FULL_SCREEN = false;
 
 function readUrl() {
@@ -13,8 +14,8 @@ function readUrl() {
     if (urlParams.get('extStart') === "true") {
         AUTO_START = false;
     }
-    if (urlParams.get('noTimeout') === "true") {
-        TIMEOUT = false;
+    if (urlParams.get('Prolific') === "true") {
+        PROLIFIC = true;
     }
     if (urlParams.get('rm2') === "true") {
         RM2 = true;
@@ -9833,7 +9834,7 @@ x
         }, {
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
-                if (!this.isTraining && TIMEOUT) {
+                if (!this.isTraining && PROLIFIC) {
                     var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
@@ -10567,7 +10568,11 @@ x
                 var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
                 var studId = searchParams.get("studId") || searchParams.get("studID") || "";
                 var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
-                var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
+                if(PROLIFIC) {
+                    var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
+                } else {
+                    var redirectURL = expUrl
+                }
                 if (!timerOK) {
                     document.getElementById("thanks-block").style.display = "none";
                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
