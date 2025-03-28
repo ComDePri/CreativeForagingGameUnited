@@ -9125,8 +9125,6 @@ function readUrl() {
         var newSize = new PIXI.Point(scale * app.renderer.width, scale * app.renderer.height);
         var remainingSpace = new PIXI.Point(parentSize.x - newSize.x, parentSize.y - newSize.y);
 
-        console.log("setting scale to", scale);
-
         var css = "scale(" + scale + ") translate(" + (remainingSpace.x / 2).toFixed(2) + "px, " + (remainingSpace.y / 2).toFixed(2) + "px)";
         var element = document.getElementById("game-container");
         var _arr = ["transform", "webkitTransform", "msTransform"];
@@ -10534,9 +10532,7 @@ x
                     type: "done selection",
                     customData: {
                         shapeIndices: this.selectedIndexes,
-                        shapes: selectedShapes,
-                        fullScreen: FULL_SCREEN
-
+                        shapes: selectedShapes
                     }
                 });
 
@@ -10545,6 +10541,128 @@ x
         }]);
         return GalleryScene;
     }(Entity);
+
+    // var ResultsScene = function (_util$Entity5) {
+    //     inherits(ResultsScene, _util$Entity5);
+    //
+    //     function ResultsScene() {
+    //         classCallCheck(this, ResultsScene);
+    //         return possibleConstructorReturn(this, (ResultsScene.__proto__ || Object.getPrototypeOf(ResultsScene)).apply(this, arguments));
+    //     }
+    //
+    //     createClass(ResultsScene, [{
+    //         key: "setup",
+    //         value: function setup() {
+    //             this.container = new PIXI.Container();
+    //             sceneLayer.addChild(this.container);
+    //
+    //             document.getElementById("results-gui").style.display = "block";
+    //
+    //
+    //             if(PROLIFIC) {
+    //                 var searchParams = new URLSearchParams(window.location.search);
+    //                 var expId = searchParams.get("expId") || searchParams.get("expID") || "";
+    //                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
+    //                 var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
+    //                 var studId = searchParams.get("studId") || searchParams.get("studID") || "";
+    //                 var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
+    //                 var redirectURL = expUrl
+    //                 redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
+    //
+    //                 if (!timerOK) {
+    //                     document.getElementById("thanks-block").style.display = "none";
+    //                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
+    //             }
+    //             // else {
+    //             //     document.getElementById("thanks-block-timeout").style.display = "none";
+    //             // }
+    //
+    //             if (!showResults) {
+    //                 document.getElementById("results-block").style.display = "none";
+    //             } else {
+    //                 document.getElementById("thanks-block").style.display = "none";
+    //
+    //                 var slider = new PIXI.Sprite(app$1.loader.resources["images/slider.png"].texture);
+    //                 slider.anchor.set(0.5);
+    //                 slider.position.set(app$1.renderer.width / 2, 145);
+    //                 this.container.addChild(slider);
+    //
+    //                 var ball = new PIXI.Graphics();
+    //                 ball.beginFill(0x2CC62C);
+    //                 ball.drawCircle(app$1.renderer.width / 2 + searchScore * 255, 120, 10);
+    //                 this.container.addChild(ball);
+    //
+    //                 if (searchScore > 0) {
+    //                     document.getElementById("rapid-search-text").style.display = "block";
+    //                 } else {
+    //                     document.getElementById("focused-search-text").style.display = "block";
+    //                 }
+    //
+    //                 var searchScorePercent = Math.round(Math.abs(searchScore) * 100);
+    //                 var _iteratorNormalCompletion9 = true;
+    //                 var _didIteratorError9 = false;
+    //                 var _iteratorError9 = undefined;
+    //
+    //                 try {
+    //                     for (var _iterator9 = document.getElementsByClassName("searchScorePercent")[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+    //                         var el = _step9.value;
+    //
+    //                         el.innerText = searchScorePercent;
+    //                     }
+    //                 } catch (err) {
+    //                     _didIteratorError9 = true;
+    //                     _iteratorError9 = err;
+    //                 } finally {
+    //                     try {
+    //                         if (!_iteratorNormalCompletion9 && _iterator9.return) {
+    //                             _iterator9.return();
+    //                         }
+    //                     } finally {
+    //                         if (_didIteratorError9) {
+    //                             throw _iteratorError9;
+    //                         }
+    //                     }
+    //                 }
+    //
+    //                 document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
+    //
+    //             }
+    //             // Setup followup link
+    //             if(PROLIFIC)
+    //             if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
+    //                 var metricsId = redmetricsConnection.playerId || "";
+    //                 var userProvidedId = playerData.customData.userProvidedId || "";
+    //
+    //                 var link = searchParams.get("followupLink");
+    //                 if (!_.contains(link, "?")) link += "?";
+    //                 link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
+    //                 document.getElementById("followup-link").href = link;
+    //             } else {
+    //                 document.getElementById("followup-link-container").style.display = "none";
+    //             }
+    //
+    //             window.location.replace(redirectURL);
+    //
+    //             // Redirecting to a link after the experiment. This is different from the one above
+    //             // because it doensn't have the parameters.
+    //             // TODO delete one of them.
+    //             // if (searchParams.has("urlNextLink") && (!localStorage.getItem('active'))) {
+    //             //     var link = searchParams.get("urlNextLink");
+    //             //     if (!_.contains(link, "http://")) {
+    //             //         link = "http://" + link;
+    //             //     }
+    //             //     window.location.replace(link);
+    //             // }
+    //         }
+    //     }, {
+    //         key: "teardown",
+    //         value: function teardown() {
+    //             document.getElementById("results-gui").style.display = "none";
+    //             sceneLayer.removeChild(this.container);
+    //         }
+    //     }]);
+    //     return ResultsScene;
+    // }(Entity);
 
     var ResultsScene = function (_util$Entity5) {
         inherits(ResultsScene, _util$Entity5);
@@ -10562,25 +10680,9 @@ x
 
                 document.getElementById("results-gui").style.display = "block";
 
-                var searchParams = new URLSearchParams(window.location.search);
-                var expId = searchParams.get("expId") || searchParams.get("expID") || "";
-                var userId = searchParams.get("userId") || searchParams.get("userID") || "";
-                var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
-                var studId = searchParams.get("studId") || searchParams.get("studID") || "";
-                var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || "";
-                var redirectURL = expUrl
-                if(PROLIFIC) {
-                    redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
-                }
-                if (!timerOK) {
-                    document.getElementById("thanks-block").style.display = "none";
-                    redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
-                } else {
-                    document.getElementById("thanks-block-timeout").style.display = "none";
-                }
-
                 if (!showResults) {
                     document.getElementById("results-block").style.display = "none";
+
                 } else {
                     document.getElementById("thanks-block").style.display = "none";
 
@@ -10601,37 +10703,54 @@ x
                     }
 
                     var searchScorePercent = Math.round(Math.abs(searchScore) * 100);
-                    var _iteratorNormalCompletion9 = true;
-                    var _didIteratorError9 = false;
-                    var _iteratorError9 = undefined;
+                    var _iteratorNormalCompletion8 = true;
+                    var _didIteratorError8 = false;
+                    var _iteratorError8 = undefined;
 
                     try {
-                        for (var _iterator9 = document.getElementsByClassName("searchScorePercent")[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-                            var el = _step9.value;
+                        for (var _iterator8 = document.getElementsByClassName("searchScorePercent")[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+                            var el = _step8.value;
 
                             el.innerText = searchScorePercent;
                         }
                     } catch (err) {
-                        _didIteratorError9 = true;
-                        _iteratorError9 = err;
+                        _didIteratorError8 = true;
+                        _iteratorError8 = err;
                     } finally {
                         try {
-                            if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                                _iterator9.return();
+                            if (!_iteratorNormalCompletion8 && _iterator8.return) {
+                                _iterator8.return();
                             }
                         } finally {
-                            if (_didIteratorError9) {
-                                throw _iteratorError9;
+                            if (_didIteratorError8) {
+                                throw _iteratorError8;
                             }
                         }
                     }
 
-                    document.getElementById("code").innerText = redmetricsConnection.playerId ? redmetricsConnection.playerId.substr(-8) : "Unknown";
-
+                    document.getElementById("code").innerText = redmetricsConnection.sessionId ? redmetricsConnection.sessionId.substr(-8) : "Unknown";
                 }
+
+                // Get search params
+                var searchParams = new URLSearchParams(window.location.search);
+                var expId = searchParams.get("expId") || searchParams.get("expID") || "";
+                var userId = searchParams.get("userId") || searchParams.get("userID") || "";
+                var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
+                var studId = searchParams.get("studId") || searchParams.get("studID") || "";
+                var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || searchParams.has("followupLink") || "";
+                var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
+
+                if (!timerOK) {
+                    redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
+                }
+
                 // Setup followup link
-                if (searchParams.has("followupLink") && (!localStorage.getItem('active'))) {
-                    var metricsId = redmetricsConnection.playerId || "";
+                if(PROLIFIC){
+                    window.location.replace(redirectURL);
+                }
+
+                if (searchParams.has("followupLink")) {
+                    var metricsId = redmetricsConnection.sessionId || "";
                     var userProvidedId = playerData.customData.userProvidedId || "";
 
                     var link = searchParams.get("followupLink");
@@ -10642,18 +10761,6 @@ x
                     document.getElementById("followup-link-container").style.display = "none";
                 }
 
-                window.location.replace(redirectURL);
-
-                // Redirecting to a link after the experiment. This is different from the one above
-                // because it doensn't have the parameters.
-                // TODO delete one of them.
-                if (searchParams.has("urlNextLink") && (!localStorage.getItem('active'))) {
-                    var link = searchParams.get("urlNextLink");
-                    if (!_.contains(link, "http://")) {
-                        link = "http://" + link;
-                    }
-                    window.location.replace(link);
-                }
             }
         }, {
             key: "teardown",
@@ -10721,31 +10828,31 @@ x
 // Load RedMetrics
 
 function showRedMetricsStatus(status) {
-    var _iteratorNormalCompletion9 = true;
-    var _didIteratorError9 = false;
-    var _iteratorError9 = undefined;
-
-    try {
-        for (var _iterator9 = document.getElementById("redmetrics-connection-status").children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
-            var child = _step9.value;
-
-            var shouldShow = child.id === "redmetrics-connection-status-" + status;
-            child.style.display = shouldShow ? "block" : "none";
-        }
-    } catch (err) {
-        _didIteratorError9 = true;
-        _iteratorError9 = err;
-    } finally {
-        try {
-            if (!_iteratorNormalCompletion9 && _iterator9.return) {
-                _iterator9.return();
-            }
-        } finally {
-            if (_didIteratorError9) {
-                throw _iteratorError9;
-            }
-        }
-    }
+    // var _iteratorNormalCompletion9 = true;
+    // var _didIteratorError9 = false;
+    // var _iteratorError9 = undefined;
+    //
+    // try {
+    //     for (var _iterator9 = document.getElementById("redmetrics-connection-status").children[Symbol.iterator](), _step9; !(_iteratorNormalCompletion9 = (_step9 = _iterator9.next()).done); _iteratorNormalCompletion9 = true) {
+    //         var child = _step9.value;
+    //
+    //         var shouldShow = child.id === "redmetrics-connection-status-" + status;
+    //         child.style.display = shouldShow ? "block" : "none";
+    //     }
+    // } catch (err) {
+    //     _didIteratorError9 = true;
+    //     _iteratorError9 = err;
+    // } finally {
+    //     try {
+    //         if (!_iteratorNormalCompletion9 && _iterator9.return) {
+    //             _iterator9.return();
+    //         }
+    //     } finally {
+    //         if (_didIteratorError9) {
+    //             throw _iteratorError9;
+    //         }
+    //     }
+    // }
 }
 
 var playerData = {
