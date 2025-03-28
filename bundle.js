@@ -10742,6 +10742,7 @@ x
 
                 if (!timerOK) {
                     redirectURL = `https://app.prolific.com/submissions/complete?cc=C135SBBZ`;
+
                 }
 
                 // Setup followup link
