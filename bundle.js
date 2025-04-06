@@ -1,7 +1,8 @@
 let KEYBOARD_CONTROL = false;
 let AUTO_START = true;
 let PROLIFIC = false;
-let RM2 = false;
+let TIMEOUT = false
+let RM2 = true;
 
 let FULL_SCREEN = false;
 
@@ -16,9 +17,13 @@ function readUrl() {
     }
     if (urlParams.get('prolific') === "true") {
         PROLIFIC = true;
+        TIMEOUT = true;
     }
-    if (urlParams.get('rm2') === "true") {
-        RM2 = true;
+    if (urlParams.get('timeout') === "true") {
+        TIMEOUT = true;
+    }
+    if (urlParams.get('rm1') === "true") {
+        RM2 = false;
     }
 }
 
@@ -9586,7 +9591,7 @@ x
             key: "onDone",
             value: function onDone() {
 
-                if(searchParams.get("rm2") === "true"){
+                if(RM2){
                     playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
                     redmetricsConnection.updateSession(playerData);
 
@@ -9832,7 +9837,7 @@ x
         }, {
             key: "startSquaresCountdown",
             value: function startSquaresCountdown() {
-                if (!this.isTraining && PROLIFIC) {
+                if (!this.isTraining && TIMEOUT) {
                     var squareCountdownValue = 85;
                     var self = this;
                     window.squareCountdown = setInterval(function () {
@@ -10867,7 +10872,18 @@ var playerData = {
 
 var gameVersionId = !!gameVersion ? gameVersion : RED_METRICS_GAME_VERSION;
 
-if(searchParams.get("rm2") === "true"){
+if(searchParams.get("rm1") === "true"){
+
+    redmetricsConnection = redmetrics.prepareWriteConnection({
+        host: RED_METRICS_HOST,
+        gameVersionId: gameVersionId,
+        player: playerData
+    });
+    redmetricsConnection.connect().then(function () {
+        console.log("Connected to the RedMetrics server");
+    });
+
+} else {
 
     redmetricsConnection = new rm2.WriteConnection({
         protocol: RM2_PROTOCOL,
@@ -10882,15 +10898,6 @@ if(searchParams.get("rm2") === "true"){
         showRedMetricsStatus("disconnected");
     });
 
-} else {
-    redmetricsConnection = redmetrics.prepareWriteConnection({
-        host: RED_METRICS_HOST,
-        gameVersionId: gameVersionId,
-        player: playerData
-    });
-    redmetricsConnection.connect().then(function () {
-        console.log("Connected to the RedMetrics server");
-    });
 }
 
 // Connect to parallel port via Mister P
