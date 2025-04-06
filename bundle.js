@@ -9591,6 +9591,10 @@ x
             key: "onDone",
             value: function onDone() {
 
+                // go full screen
+                requestFullscreen(document.getElementById("game-parent"));
+                showFullscreenIcon(false);
+
                 if(RM2){
                     playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
                     redmetricsConnection.updateSession(playerData);
@@ -9598,9 +9602,6 @@ x
                     this.done = true;
 
                 } else {
-                    // go full screen
-                    requestFullscreen(document.getElementById("game-parent"));
-                    showFullscreenIcon(false);
 
                     // register provided ID
                     playerData.customData.userProvidedId = document.getElementById("user-provided-id").value;
