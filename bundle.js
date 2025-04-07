@@ -10743,7 +10743,7 @@ x
                 var userId = searchParams.get("userId") || searchParams.get("userID") || "";
                 var sessId = searchParams.get("sessId") || searchParams.get("sessID") || "";
                 var studId = searchParams.get("studId") || searchParams.get("studID") || "";
-                var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || searchParams.has("followupLink") || "";
+                var expUrl = searchParams.get("expUrl") || searchParams.get("expurl") || searchParams.get("expURL") || searchParams.has("followupLink") || searchParams.get("urlNextLink") || "";
                 var redirectURL = `${expUrl}?PROLIFIC_PID=${userId}&STUDY_ID=${studId}&SESSION_ID=${sessId}`;
 
                 if (!timerOK) {
@@ -10760,7 +10760,7 @@ x
                     var metricsId = redmetricsConnection.sessionId || "";
                     var userProvidedId = playerData.customData.userProvidedId || "";
 
-                    var link = searchParams.get("followupLink");
+                    var link = searchParams.get("followupLink") || searchParams.get("urlNextLink") || searchParams.get("expURL") ;
                     if (!_.contains(link, "?")) link += "?";
                     link += "&IDExp=" + expId + "&IDUser=" + userId + "&IDMetrics=" + metricsId + "&IDUserProvided=" + userProvidedId;
                     document.getElementById("followup-link").href = link;
