@@ -10809,7 +10809,13 @@ x
 
     if (timerValue != null) {
         MAX_SEARCH_TIME = parseInt(timerValue) * 60 * 1000;
-        document.getElementById("game-length-sentence").innerHTML = "The game is " + parseInt(timerValue) + " minutes long.";
+
+        const lang = searchParams.get("hebrew");
+        const sentence = lang === "true"
+            ? "המשחק יימשך " + parseInt(timerValue) + " דקות."
+            : "The game is " + parseInt(timerValue) + " minutes long.";
+
+        document.getElementById("game-length-sentence").innerHTML = sentence;
     }
 
     var gameVersion = searchParams.get("gameVersion");
