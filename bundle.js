@@ -10812,8 +10812,9 @@ x
 
         const lang = searchParams.get("hebrew");
         const sentence = lang === "true"
-            ? "המשחק יימשך " + parseInt(timerValue) + " דקות."
-            : "The game is " + parseInt(timerValue) + " minutes long.";
+            ? "✅יש לכם " + parseInt(timerValue) + " דקות לשחק<br>✅שחקו חופשי, אין תשובות נכונות או לא נכונות<br>✅תהנו!"
+            : "✅You have " + parseInt(timerValue) + " minutes to play<br>✅Play freely, there is no right or wrong<br>✅Enjoy!";
+
 
         document.getElementById("game-length-sentence").innerHTML = sentence;
     }
