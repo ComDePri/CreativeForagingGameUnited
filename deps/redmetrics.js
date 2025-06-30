@@ -1916,7 +1916,7 @@ var rm2 = (() => {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
             this._eventQueue.push(event);
-            console.log("RM2: Add Event ", this._event_counter, "to queue: ", event);
+            console.log("RM2: Add Event", this._event_counter, "to queue: ", event);
             this._event_counter++;
         }
         async updateSession(session) {
