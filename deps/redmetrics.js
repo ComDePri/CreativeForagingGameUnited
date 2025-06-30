@@ -1895,7 +1895,7 @@ var rm2 = (() => {
             const eventData = this._eventQueue.map((event) => __spreadProps(__spreadValues({}, event), {
                 sessionId: this._sessionId
             }));
-            console.log("RM2: WriteConnection sending events", JSON.parse(JSON.stringify(eventData)));
+            console.log("RM2: WriteConnection sending ", this._eventQueue.length , " events", JSON.parse(JSON.stringify(eventData)));
             try {
                 await this._api("Post", "/event", eventData);
                 this._eventQueue = [];
@@ -1915,7 +1915,7 @@ var rm2 = (() => {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
             this._eventQueue.push(event);
-            console.log("RM2: WriteConnection postEvent", event);
+            console.log("RM2: Add to queue (" , this._eventQueue.length , ") : ", event);
         }
         async updateSession(session) {
             this._config.session = session;
