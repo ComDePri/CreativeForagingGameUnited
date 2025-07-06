@@ -1943,14 +1943,28 @@ var rm2 = (() => {
         postEvent(event) {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
-        
+            
+            console.log("RM2: postEvent called", {
+                queueLength: this._eventQueue.length,
+                eventCounter: this._event_counter
+            });
+
             this._eventQueue.push(event);
             console.log("RM2: Add Event", this._event_counter, "to queue: ", JSON.stringify(event, null, 2));
             this._event_counter++;
+
+            console.log("RM2: event pushed to queue", {
+                queueLength: this._eventQueue.length,
+                eventCounter: this._event_counter
+            });
         
             // Trigger sendData immediately if we're connected and not buffering
             if (this._connected && !this._buffering) {
                 // Use setTimeout to avoid blocking and ensure it runs after current stack
+                console.log("RM2: postEvent calls sendData", {
+                    queueLength: this._eventQueue.length,
+                    eventCounter: this._event_counter
+                });
                 setTimeout(() => this.sendData(), 0);
             }
         }        
