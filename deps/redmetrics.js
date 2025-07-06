@@ -1943,10 +1943,17 @@ var rm2 = (() => {
         postEvent(event) {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
+        
             this._eventQueue.push(event);
             console.log("RM2: Add Event", this._event_counter, "to queue: ", JSON.stringify(event, null, 2));
             this._event_counter++;
-        }
+        
+            // Trigger sendData immediately if we're connected and not buffering
+            if (this._connected && !this._buffering) {
+                // Use setTimeout to avoid blocking and ensure it runs after current stack
+                setTimeout(() => this.sendData(), 0);
+            }
+        }        
         async updateSession(session) {
             this._config.session = session;
             if (!this._connected)
