@@ -1887,31 +1887,59 @@ var rm2 = (() => {
             this._connected = false;
         }
         async sendData() {
-            if (this._buffering || this._eventQueue.length === 0)
+            console.log("RM2: sendData called", {
+                buffering: this._buffering,
+                queueLength: this._eventQueue.length,
+                connected: this._connected,
+                eventCounter: this._event_counter
+            });
+        
+            if (this._buffering) {
+                console.log("RM2: sendData early return - already buffering");
                 return 0;
-            if (!this._connected) {
-                throw new Error("RM2: \u274C WriteConnection client not connected");
             }
+            if (this._eventQueue.length === 0) {
+                console.log("RM2: sendData early return - event queue empty");
+                return 0;
+            }
+            if (!this._connected) {
+                console.warn("RM2: sendData early return - not connected");
+                return 0;
+            }
+        
             this._buffering = true;
-            const eventData = this._eventQueue.map((event) => __spreadProps(__spreadValues({}, event), {
+        
+            const eventData = this._eventQueue.map((event) => ({
+                ...event,
                 sessionId: this._sessionId
             }));
-            console.log("RM2: WriteConnection sending events", this._event_counter - this._eventQueue.length , "to", this._event_counter - 1, JSON.parse(JSON.stringify(eventData)));
+        
+            console.log("RM2: WriteConnection sending events",
+                this._event_counter - this._eventQueue.length,
+                "to",
+                this._event_counter - 1,
+                JSON.parse(JSON.stringify(eventData))
+            );
+        
             try {
                 await this._api("Post", "/event", eventData);
                 this._eventQueue = [];
                 eventData.length = 0;
             } catch (error) {
+                console.error("RM2: sendData error", error);
                 if (/[45]\d{2}/.test(error.message)) {
                     this._connected = false;
-                    console.error(error);
-                    throw new Error("RM2: \u274C WriteConnection connection crash");
+                    console.error("RM2: ❌ WriteConnection connection crash");
+                    throw new Error("RM2: ❌ WriteConnection connection crash");
                 } else {
+                    // You can log here other unexpected errors too
+                    console.error("RM2: sendData unexpected error", error);
                 }
+            } finally {
+                this._buffering = false;
             }
-            this._buffering = false;
             return eventData.length;
-        }
+        }       
         postEvent(event) {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
