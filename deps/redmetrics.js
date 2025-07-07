@@ -1887,59 +1887,39 @@ var rm2 = (() => {
             this._connected = false;
         }
         async sendData() {
+            const startCounter = this._event_counter;
             console.log("RM2: sendData called", {
                 buffering: this._buffering,
                 queueLength: this._eventQueue.length,
                 connected: this._connected,
-                eventCounter: this._event_counter
+                eventCounter: startCounter
             });
-        
-            if (this._buffering) {
-                console.log("RM2: sendData early return - already buffering");
+            if (this._buffering || this._eventQueue.length === 0)
                 return 0;
-            }
-            if (this._eventQueue.length === 0) {
-                console.log("RM2: sendData early return - event queue empty");
-                return 0;
-            }
             if (!this._connected) {
-                console.warn("RM2: sendData early return - not connected");
-                return 0;
+                throw new Error("RM2: \u274C WriteConnection client not connected");
             }
-        
             this._buffering = true;
-        
-            const eventData = this._eventQueue.map((event) => ({
-                ...event,
+            const eventData = this._eventQueue.map((event) => __spreadProps(__spreadValues({}, event), {
                 sessionId: this._sessionId
             }));
-        
-            console.log("RM2: WriteConnection sending events",
-                this._event_counter - this._eventQueue.length,
-                "to",
-                this._event_counter - 1,
-                JSON.parse(JSON.stringify(eventData))
-            );
-        
+            console.log("RM2: WriteConnection sending events", startCounter - this._eventQueue.length , "to", startCounter - 1, JSON.parse(JSON.stringify(eventData)));
             try {
                 await this._api("Post", "/event", eventData);
-                this._eventQueue = [];
+                const sentCount = eventData.length;
+                this._eventQueue.splice(0, sentCount);
                 eventData.length = 0;
             } catch (error) {
-                console.error("RM2: sendData error", error);
                 if (/[45]\d{2}/.test(error.message)) {
                     this._connected = false;
-                    console.error("RM2: ❌ WriteConnection connection crash");
-                    throw new Error("RM2: ❌ WriteConnection connection crash");
+                    console.error(error);
+                    throw new Error("RM2: \u274C WriteConnection connection crash");
                 } else {
-                    // You can log here other unexpected errors too
-                    console.error("RM2: sendData unexpected error", error);
                 }
-            } finally {
-                this._buffering = false;
             }
+            this._buffering = false;
             return eventData.length;
-        }       
+        }
         postEvent(event) {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
@@ -1957,16 +1937,6 @@ var rm2 = (() => {
                 queueLength: this._eventQueue.length,
                 eventCounter: this._event_counter
             });
-        
-            // Trigger sendData immediately if we're connected and not buffering
-            if (this._connected && !this._buffering) {
-                // Use setTimeout to avoid blocking and ensure it runs after current stack
-                console.log("RM2: postEvent calls sendData", {
-                    queueLength: this._eventQueue.length,
-                    eventCounter: this._event_counter
-                });
-                setTimeout(() => this.sendData(), 0);
-            }
         }        
         async updateSession(session) {
             this._config.session = session;
