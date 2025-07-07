@@ -1888,12 +1888,6 @@ var rm2 = (() => {
         }
         async sendData() {
             const startCounter = this._event_counter;
-            console.log("RM2: sendData called", {
-                buffering: this._buffering,
-                queueLength: this._eventQueue.length,
-                connected: this._connected,
-                eventCounter: startCounter
-            });
             if (this._buffering || this._eventQueue.length === 0)
                 return 0;
             if (!this._connected) {
@@ -1930,7 +1924,7 @@ var rm2 = (() => {
             });
 
             this._eventQueue.push(event);
-            console.log("RM2: Add Event", this._event_counter, "to queue: ", JSON.stringify(event, null, 2));
+            console.log("RM2: Add Event", this._event_counter, "to queue: ", event);
             this._event_counter++;
 
             console.log("RM2: event pushed to queue", {
