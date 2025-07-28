@@ -1897,7 +1897,7 @@ var rm2 = (() => {
             const eventData = this._eventQueue.map((event) => __spreadProps(__spreadValues({}, event), {
                 sessionId: this._sessionId
             }));
-            console.log("RM2: WriteConnection sending events", startCounter - this._eventQueue.length , "to", startCounter - 1, JSON.parse(JSON.stringify(eventData)));
+            //console.log("RM2: WriteConnection sending events", startCounter - this._eventQueue.length , "to", startCounter - 1, JSON.parse(JSON.stringify(eventData)));
             try {
                 await this._api("Post", "/event", eventData);
                 const sentCount = eventData.length;
@@ -1918,25 +1918,25 @@ var rm2 = (() => {
             if (!event.userTimestamp)
                 event.userTimestamp = new Date().toISOString();
             
-            console.log("RM2: postEvent called", {
-                queueLength: this._eventQueue.length,
-                eventCounter: this._event_counter
-            });
+            // console.log("RM2: postEvent called", {
+            //     queueLength: this._eventQueue.length,
+            //     eventCounter: this._event_counter
+            // });
 
             this._eventQueue.push(event);
-            console.log("RM2: Add Event", this._event_counter, "to queue: ", event);
+            // console.log("RM2: Add Event", this._event_counter, "to queue: ", event);
             this._event_counter++;
 
-            console.log("RM2: event pushed to queue", {
-                queueLength: this._eventQueue.length,
-                eventCounter: this._event_counter
-            });
+            // console.log("RM2: event pushed to queue", {
+            //     queueLength: this._eventQueue.length,
+            //     eventCounter: this._event_counter
+            // });
         }        
         async updateSession(session) {
             this._config.session = session;
             if (!this._connected)
                 return;
-            console.log("RM2: WriteConnection updating session", session);
+            //console.log("RM2: WriteConnection updating session", session);
             await this._api("Put", `/session/${this._sessionId}`, session);
         }
     };

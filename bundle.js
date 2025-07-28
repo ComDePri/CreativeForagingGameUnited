@@ -3,6 +3,7 @@ let AUTO_START = true;
 let PROLIFIC = false;
 let TIMEOUT = false
 let RM2 = true;
+const urlParams = new URL(location.href).searchParams;
 
 let FULL_SCREEN = false;
 
@@ -26,6 +27,7 @@ function readUrl() {
         RM2 = false;
     }
 }
+
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
@@ -10543,6 +10545,10 @@ x
                 });
 
                 this.done = true;
+
+                // click "s" to save file if local=true
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "s" }));
+
             }
         }]);
         return GalleryScene;
@@ -10907,6 +10913,56 @@ if(searchParams.get("rm1") === "true"){
     });
 
 }
+
+// Setup local log
+    window.localLog = window.localLog || [];
+
+    (function wrapPostEventAndAddKeyListener() {
+        if (!redmetricsConnection || typeof redmetricsConnection.postEvent !== "function") {
+            console.warn("redmetricsConnection.postEvent not found");
+            return;
+        }
+
+        const originalPostEvent = redmetricsConnection.postEvent.bind(redmetricsConnection);
+
+        redmetricsConnection.postEvent = function wrappedPostEvent(event) {
+            // Save to local log
+            window.localLog.push({
+                type: "event",
+                timestamp: new Date().toISOString(),
+                data: event
+            });
+            //console.log("[LocalLog] postEvent logged:", event);
+
+            // Call original
+            return originalPostEvent(event);
+        };
+
+        // Add 'S' key listener to trigger log download
+        window.addEventListener("keydown", function (e) {
+            if ((e.key === "s" || e.key === "S") && (urlParams.get('local') === "true")) {
+                const searchParams = new URLSearchParams(window.location.search);
+                const expId = searchParams.get("expId") || searchParams.get("expID") || "exp";
+                const userId = searchParams.get("userId") || searchParams.get("userID") || "user";
+
+                const timestamp = new Date().toISOString()
+                    .replace(/:/g, "-")
+                    .replace(/\..+/, "")
+                    .replace("T", "_");
+
+                const filename = `log_exp-${expId}_user-${userId}_${timestamp}.json`;
+                const blob = new Blob([JSON.stringify(window.localLog, null, 2)], {
+                    type: "application/json"
+                });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.click();
+
+                //console.log(`[LocalLog] Download triggered: ${filename}`);
+            }
+        });
+    })();
 
 // Connect to parallel port via Mister P
     var webSocketScheme = window.location.protocol === "https:" ? "wss" : "ws";
