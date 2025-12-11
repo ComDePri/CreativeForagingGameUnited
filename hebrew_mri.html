@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>The Shapes Game</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no"/>
+    <link href="game.css" rel="stylesheet">
+    <link href="fonts/css/fontello.css" rel="stylesheet">
+</head>
+<body>
+<div id="game-parent">
+    <div id="game-container">
+        <canvas id="pixi-canvas"></canvas>
+
+        <div id="html-layer" dir="rtl">
+            <div id="sections">
+
+                <!-- screen 1 -->
+                <div id="intro-gui">
+                    <h1>ברוכים הבאים למשחק הצורות המשתנות!</h1>
+                    <p>הכנס מזהה משחק:</p>
+                    <br>
+                    <p><input id="user-provided-id"></p>
+                    <br><button id="done-intro">המשך</button></p>
+                </div>
+
+                <div id="training-gui">
+                    <h1 id="training-title">שלב האימון</h1>
+
+                    <!-- screen 2 -->
+                    <div id="training-1">
+                        <p>במרחב הצורות קיימות צורות מיוחדות רבות שניתן לגלות.<br>
+                            🔍המשימה שלך? לגלות צורות מעניינות ויפות.</p>
+                        </p>
+                        <div class="bottom-text">
+                            <p>ניתן לגלות צורות על ידי הזזת הבלוקים הירוקים שעל המסך.</p>
+                            <p class="highlight">גררו את הבלוק השמאלי ביותר למיקום אחר</p>
+                            <br><button id="done-training-1" class="hidden">המשך</button>
+                        </div>
+                    </div>
+
+                    <!-- screen 3 -->
+                    <div id="training-2" class="hidden">
+                        <p>ניתן להזיז כל בלוק כל עוד כל הבלוקים נשארים מחוברים.</p>
+                        <div class="bottom-text">
+                            <p>הזיזו בלוק נוסף למיקום אחר</p>
+                            <p>כעת, נסו להזיז בלוק שלא ניתן להזיז, כיוון שהזזתו תפריד בין הבלוקים.</p>
+                            <br><button id="done-training-2">המשך</button>
+                        </div>
+                    </div>
+
+                    <!-- screen 4 -->
+                    <div id="training-3" class="hidden">
+                        <div id="block-overlay" class="hidden"></div>
+                        <p>כאשר אתם מוצאים צורה מעניינת או יפה, ניתן לשמור אותה<br>
+                            בגלריה באמצעות הלחצן הנוסף שבידכם.</p>
+                        <div class="bottom-text">
+                            <p class="highlight" id="click-there-p">לחצו עכשיו על הלחצן הנוסף</p>
+                            <button id="after-saving" class="hidden">המשך</button>
+                        </div>
+                    </div>
+
+                    <!-- screen 5 -->
+                    <div id="training-4" class="hidden">
+                        <div class="black-box">
+                            <p>בסיום המשחק תוכלו לראות<br>את כל הצורות ששמרתם בגלריה.</p>
+                            <p id="game-length-sentence" style="text-align: right;">
+                                ✅ יש לך 12 דקות לשחק.<br>
+                                ✅ שחקו לבד, בסביבה שקטה.<br>
+                                ✅ והכי חשוב – תהנו!
+                            </p>
+
+                            <div class="bottom-text">
+                                <button id="done-training-3">בואו נשחק</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="blocks-gui">
+                    <button id="add-shape" style="font-size: 24px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji',emoji;">🤍
+                    </button>
+                    <br><button id="done-adding">End Game</button>
+                    <p id="square-countdown" class="hidden">85</p>
+                    <p id="end-early-message" class="hidden">צריך לאסוף לפחות 5 צורות כדי לעבור לשלב הבא</p>
+                    <p id="continue-message" class="vertical-align hidden">הזמן נגמר!
+                    </p>
+
+                    <div id="modal-confirm-done" class="hidden">
+                        <div id="modal-confirm-box">
+                            <p>בטוחים שתרצו לסיים עכשיו?</p>
+                            <button id="modal-confirm-cancel-button">חזור למשחק</button>
+                            <button id="modal-confirm-done-button">סיים</button>
+                        </div>
+                    </div>
+
+                    <div id="square-timeout-modal" class="hidden">
+                        <div id="square-timeout-box">
+                            <p>לא ביצעת מהלך יותר מ-90 שניות, בניגוד להוראות
+                                <br>המשחק יסתיים כעת.</p>
+                            <button id="square-timeout-done-button">אישור</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="selection-gui">
+                    <p id="gallery-instructions">בחרו את 5 הצורות המעניינות ביותר מבין הצורות ששמרתם
+                    </p>
+                    <button id="done-selection">אנא קרא לנסיין</button>
+                    <button id="previous-page-button">עמוד קודם</button>
+                    <button id="next-page-button">עמוד הבא</button>
+                </div>
+                <div id="results-gui">
+                    <div id="results-block">
+                        <h1>תוצאות</h1>
+                        <div id="results-text" class="bottom-text">
+                            <p id="rapid-search-text" class="hidden">
+                                המחקר שלנו מראה שחיפוש יצירתי הוא טרייד-אוף בין חדשנות למשמעות
+                                <br>שיטת המשחק שלך מרמזת שאתה <span class="highlight"><span class="searchScorePercent highlight"></span>%</span>נוטה יותר לכיוון חיפוש שהוא <span class="highlight">מהיר ומתרחב.</span>
+                                בסוג זה של חיפוש, שחקנים נוטים לנוע במהירות בין צורות, ויוצרים צורות רבות אשר שייכות לקטגוריות ויזואליות שונות.
+                                אסטרטגיית חיפוש זו בדרך כלל מייצרת צורות ייחודיות יותר במשחק שלנו
+                            </p>
+                            <p id="focused-search-text" class="hidden">
+                                המחקר שלנו מראה שחיפוש יצירתי הוא טרייד-אוף בין חדשנות למשמעות
+                                <br>שיטת המשחק שלך מרמזת שאתה <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> נוטה יותר לכיוון חיפוש שהוא <span class="highlight">ממוקד ובעל עומק.</span>
+                                אשר תוצאתו משמעות חזותית גבוהה יותר.
+                                בסוג זה של חיפוש, שחקנים נוטים להתמקד בכל קטגוריה חזותית שהם מגלים, ע"י איסוף צורות שהושקע בהן הרבה מחשבה
+                                ונמצאות בקונצנזוס.
+                                אסטרטגיית חיפוש זו בדרך כלל מייצרת צורות שנושאות יותר משמעות במשחק שלנו.
+                            </p>
+
+                            <p><br>מזהה המשחק שלך: <br><br><span class="code" id="code"></span></p>
+
+                            <p id="followup-link-container">על מנת להשלים את הניסוי,<a id="followup-link" href="">אנא עקוב אחר קישור זה</a>.</p>
+                        </div>
+                    </div>
+
+                    <div id="thanks-block-timeout">
+                        <h1 class="vertical-align" style="background-color: black; font-size: 0.8em;">נגמר הזמן.</h1>
+
+                    </div>
+                    <div id="thanks-block">
+                        <h1 class="vertical-align" style="background-color: black; font-size: 2.5em;">תודה ששיחקת!</h1>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="fullscreen-button">
+                <i id="fullscreen-button-full" class="icon-resize-full"></i>
+                <i id="fullscreen-button-small" class="icon-resize-small"></i>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="deps/pixi.js"></script>
+<script src="deps/q.js"></script>
+<script src="deps/q-xhr.js"></script>
+<script src="deps/underscore.js"></script>
+<script src="deps/redmetrics.js"></script>
+
+<script src="bundle.js"></script>
+
+
+</body>
+</html>

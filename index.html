@@ -1,9 +1,12 @@
 <script>
     const params = new URLSearchParams(window.location.search);
     const lang = params.get("hebrew");
+    const mri = params.get("kbControl");
 
     // Redirect or change content based on language
-    if (lang === "true") {
+    if (lang === "true" && mri === "true") {
+        window.location.href = "hebrew_mri.html" + window.location.search;
+    } else if (lang === "true" && mri === "false") {
         window.location.href = "hebrew.html" + window.location.search;
     } else {
         window.location.href = "english.html" + window.location.search;
