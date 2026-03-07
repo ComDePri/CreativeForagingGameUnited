@@ -52,10 +52,16 @@
     '}',
   ].join('\n');
 
+  function getUrlParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
   function WriteConnection(options) {
     this._sessionMeta = options.session || {};
-    // ?apiKey= URL param is repurposed as gameVersionId in the new backend
-    this._gameVersionId = options.apiKey || window.CFG_CONFIG.DEFAULT_GAME_VERSION_ID || null;
+    // Read gameVersion and gameId from URL params (matching old backend URL format).
+    // Falls back to CFG_CONFIG values if not present in URL.
+    this._gameVersionId = getUrlParam('gameVersion') || window.CFG_CONFIG.DEFAULT_GAME_VERSION_ID || null;
+    this._gameId = getUrlParam('gameId') || window.CFG_CONFIG.GAME_ID || null;
     this._sessionId = null;
     this._connected = false;
     this._eventQueue = [];
@@ -95,7 +101,7 @@
       var playerId = data.createPlayer.id;
       var sessionInput = {
         playerId: playerId,
-        gameId: config.GAME_ID,
+        gameId: self._gameId,
         startedAt: now,
         metadata: JSON.stringify(self._sessionMeta),
       };
