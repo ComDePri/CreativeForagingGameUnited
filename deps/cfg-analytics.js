@@ -129,7 +129,7 @@
     graphql(config.APPSYNC_URL, config.APPSYNC_API_KEY, CREATE_EVENT, {
       input: {
         sessionId: this._sessionId,
-        gameId: config.GAME_ID,
+        gameId: this._gameId,
         type: event.type,
         occurredAt: new Date().toISOString(),
         data: event.customData != null ? JSON.stringify(event.customData) : null,
