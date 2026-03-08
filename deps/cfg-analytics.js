@@ -113,6 +113,25 @@
       // Flush buffered events
       self._eventQueue.forEach(function (e) { self._sendEvent(e); });
       self._eventQueue = [];
+      // Mark session ended when the page unloads (tab close, navigation, game over)
+      window.addEventListener('beforeunload', function () {
+        self._markEnded();
+      });
+    });
+  };
+
+  WriteConnection.prototype._markEnded = function () {
+    if (!this._sessionId) return;
+    var config = window.CFG_CONFIG;
+    // fetch with keepalive ensures the request completes even during page unload
+    fetch(config.APPSYNC_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': config.APPSYNC_API_KEY },
+      body: JSON.stringify({
+        query: 'mutation UpdateSession($input: UpdateSessionInput!) { updateSession(input: $input) { id } }',
+        variables: { input: { id: this._sessionId, endedAt: new Date().toISOString() } },
+      }),
+      keepalive: true,
     });
   };
 
