@@ -70,6 +70,11 @@
     this._sessionId = null;
     this._connected = false;
     this._eventQueue = [];
+    // batchSize controls how many events are accumulated before sending a single
+    // POST request. Default 1 = send every event immediately (original behaviour).
+    var rawBatch = parseInt(getUrlParam('batchSize') || '1', 10);
+    this._batchSize = (isNaN(rawBatch) || rawBatch < 1) ? 1 : rawBatch;
+    this._batchQueue = [];
   }
 
   Object.defineProperty(WriteConnection.prototype, 'sessionId', {
@@ -120,7 +125,7 @@
       var queued = self._eventQueue;
       self._eventQueue = [];
       queued.forEach(function (e) {
-        try { self._sendEvent(e); } catch (err) {
+        try { self._stageEvent(e); } catch (err) {
           console.error('CFG: failed to send queued event', err);
         }
       });
@@ -135,6 +140,8 @@
 
   WriteConnection.prototype._markEnded = function () {
     if (!this._sessionId) return;
+    // Flush any events still waiting in the batch before closing the session.
+    this._flushBatch();
     var config = window.CFG_CONFIG;
     // fetch with keepalive ensures the request completes even during page unload
     fetch(config.APPSYNC_URL, {
@@ -153,11 +160,12 @@
       this._eventQueue.push(event);
       return;
     }
-    this._sendEvent(event);
+    this._stageEvent(event);
   };
 
-  WriteConnection.prototype._sendEvent = function (event) {
-    var config = window.CFG_CONFIG;
+  // Build the event input object and push it onto the batch queue.
+  // Flushes the batch automatically once it reaches _batchSize.
+  WriteConnection.prototype._stageEvent = function (event) {
     var dataStr = null;
     if (event.customData != null) {
       try {
@@ -166,16 +174,50 @@
         console.error('CFG: failed to serialize event data, sending without data:', err);
       }
     }
-    graphql(config.APPSYNC_URL, config.APPSYNC_API_KEY, CREATE_EVENT, {
-      input: {
-        sessionId: this._sessionId,
-        gameId: this._gameId,
-        type: event.type,
-        occurredAt: new Date().toISOString(),
-        data: dataStr,
-      },
-    }).catch(function (err) {
-      console.error('CFG: failed to post event', err);
+    this._batchQueue.push({
+      sessionId: this._sessionId,
+      gameId: this._gameId,
+      type: event.type,
+      occurredAt: new Date().toISOString(),
+      data: dataStr,
+    });
+    if (this._batchQueue.length >= this._batchSize) {
+      this._flushBatch();
+    }
+  };
+
+  // Send all queued event inputs as a single GraphQL POST and clear the queue.
+  // For a single event the existing CREATE_EVENT mutation is used unchanged.
+  // For multiple events each gets its own aliased createEvent field so that
+  // the entire batch travels in one HTTP request.
+  WriteConnection.prototype._flushBatch = function () {
+    if (this._batchQueue.length === 0) return;
+    var batch = this._batchQueue;
+    this._batchQueue = [];
+    var config = window.CFG_CONFIG;
+
+    if (batch.length === 1) {
+      graphql(config.APPSYNC_URL, config.APPSYNC_API_KEY, CREATE_EVENT, {
+        input: batch[0],
+      }).catch(function (err) {
+        console.error('CFG: failed to post event', err);
+      });
+      return;
+    }
+
+    // Build a multi-alias mutation: each event becomes e0, e1, … eN
+    var varDefs = batch.map(function (_, i) {
+      return '$input' + i + ': CreateEventInput!';
+    }).join(', ');
+    var fields = batch.map(function (_, i) {
+      return '  e' + i + ': createEvent(input: $input' + i + ') { id }';
+    }).join('\n');
+    var query = 'mutation BatchCreateEvents(' + varDefs + ') {\n' + fields + '\n}';
+    var variables = {};
+    batch.forEach(function (input, i) { variables['input' + i] = input; });
+
+    graphql(config.APPSYNC_URL, config.APPSYNC_API_KEY, query, variables).catch(function (err) {
+      console.error('CFG: failed to post event batch', err);
     });
   };
 
