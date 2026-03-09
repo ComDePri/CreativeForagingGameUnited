@@ -57,7 +57,12 @@
   }
 
   function WriteConnection(options) {
-    this._sessionMeta = options.session || {};
+    var urlParams = {};
+    new URLSearchParams(window.location.search).forEach(function (value, key) {
+      urlParams[key] = value;
+    });
+    // URL params are the base; explicit session options take precedence.
+    this._sessionMeta = Object.assign({}, urlParams, options.session || {});
     // Read gameVersion and gameId from URL params (matching old backend URL format).
     // Falls back to CFG_CONFIG values if not present in URL.
     this._gameVersionId = getUrlParam('gameVersion') || window.CFG_CONFIG.DEFAULT_GAME_VERSION_ID || null;
@@ -110,13 +115,21 @@
     }).then(function (data) {
       self._sessionId = data.createSession.id;
       self._connected = true;
-      // Flush buffered events
-      self._eventQueue.forEach(function (e) { self._sendEvent(e); });
+      // Flush buffered events; guard each individually so one bad event can't
+      // abort the flush and leave the rest stranded.
+      var queued = self._eventQueue;
       self._eventQueue = [];
+      queued.forEach(function (e) {
+        try { self._sendEvent(e); } catch (err) {
+          console.error('CFG: failed to send queued event', err);
+        }
+      });
       // Mark session ended when the page unloads (tab close, navigation, game over)
       window.addEventListener('beforeunload', function () {
         self._markEnded();
       });
+    }).catch(function (err) {
+      console.error('CFG: connect failed – events will not be recorded:', err);
     });
   };
 
@@ -145,13 +158,21 @@
 
   WriteConnection.prototype._sendEvent = function (event) {
     var config = window.CFG_CONFIG;
+    var dataStr = null;
+    if (event.customData != null) {
+      try {
+        dataStr = JSON.stringify(event.customData);
+      } catch (err) {
+        console.error('CFG: failed to serialize event data, sending without data:', err);
+      }
+    }
     graphql(config.APPSYNC_URL, config.APPSYNC_API_KEY, CREATE_EVENT, {
       input: {
         sessionId: this._sessionId,
         gameId: this._gameId,
         type: event.type,
         occurredAt: new Date().toISOString(),
-        data: event.customData != null ? JSON.stringify(event.customData) : null,
+        data: dataStr,
       },
     }).catch(function (err) {
       console.error('CFG: failed to post event', err);
