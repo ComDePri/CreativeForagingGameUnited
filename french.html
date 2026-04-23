@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>The Shapes Game</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no"/>
+  <link href="game.css" rel="stylesheet">
+  <link href="fonts/css/fontello.css" rel="stylesheet">
+</head>
+<body>
+  <div id="game-parent">
+    <div id="game-container">
+      <canvas id="pixi-canvas"></canvas>
+
+      <div id="html-layer">
+        <div id="sections">
+
+          <!-- screen 1 -->
+          <div id="intro-gui">
+            <h1>Bienvenue dans le jeu des formes !</h1>
+            <p>Pour continuer, indique ton numéro de participant ci-dessous :</p>
+            <br>
+            <p><input id="user-provided-id"></p>
+            <br><button id="done-intro">Clique ici pour continuer  </button></p>
+          </div>
+          <div id="training-gui">
+            <h1 id="training-title">Partie 1 : Entrainement</h1>
+
+            <!-- screen 2 -->
+            <div id="training-1">
+              <p>Dans ce jeu, tu vas pouvoir découvrir<br> de très nombreuses formes belles et intéressantes.
+                <br>
+                <br>Ta mission ? Découvrir ces formes !  🔍
+              <div class="bottom-text">
+                <p>Pour cela, tu vas devoir déplacer les carrés verts que tu vois sur l’écran.</p>
+                <p class="highlight">Fais glisser le carré le plus à gauche pour le mettre à un autre emplacement, puis appuie sur le bouton « suivant  »</p>
+                <br><button id="done-training-1" class="hidden">Suivant</button>
+              </div>
+            </div>
+
+            <!-- screen 3 -->
+            <div id="training-2" class="hidden">
+              <p>Tu peux bouger tous les blocs, du moment qu’ils restent tous connectés les uns aux autres.</p>
+              <div class="bottom-text">
+                <p class="highlight"> Tu peux bouger un autre bloc à un autre endroit. Ensuite, appuie sur le bouton « suivant ».</p>
+                <br><button id="done-training-2">Suivant</button>
+              </div>
+            </div>
+
+            <!-- screen 4 -->
+            <div id="training-3" class="hidden">
+              <div id="block-overlay" class="hidden"></div>
+              <p>Lorsque tu crées une forme que tu trouves intéressante et belle,
+              <br>tu peux l’enregistrer en cliquant sur le bouton avec le cœur, que tu vois à droite de ton écran.</p>
+              <div class="bottom-text">
+                <p class="highlight" id="click-there-p">Clic sur le bouton Cœur</p>
+                <button id="after-saving" class="hidden">Suivant</button>
+              </div>
+            </div>
+
+          <!-- screen 5 -->
+            <div id="training-4" class="hidden">
+              <div class="black-box">
+                <p>Quand le jeu est fini, tu pourras voir<br>toutes les formes que tu as sauvegarder dans la gallerie.</p>
+                <p id="game-length-sentence" style="text-align: left;">
+                  ✅ Tu as 12 minutes pour jouer à ce jeu<br>
+                  ✅ Le jeu est individuel. Joue seul, au calme<br>
+                  ✅ Le plus important : amuses-toi !
+                </p>
+
+                <div class="bottom-text">
+                  <button id="done-training-3">Lancer le jeu</button>
+                </div>
+              </div>
+            </div>
+
+          <!-- screen 6 -->
+            <div id="selection-gui">
+            <p id="gallery-instructions">S’il te plait, choisis les 5 formes les plus créatives parmi toutes les formes sauvegardées.
+            </p>
+            <button id="done-selection">Fini</button>
+            <button id="previous-page-button">Page précédente</button>
+            <button id="next-page-button">Page suivante</button>
+          </div>
+
+          <!-- screen 7 -->
+            <div id="selection-gui-2">
+            <p id="gallery-instructions" style="color: #0056b3;">
+              Regarde les formes que tu as créées, dans l’ordre dans lequel elles ont été créées. 
+              <br>Sélectionne les formes qui, d’après toi, représentent un moment où tu as fait quelque chose de complètement différent de ce que tu avais fait avant.
+            </p>
+            <button id="done-selection">Fini</button>
+            <button id="previous-page-button">Page précédente</button>
+            <button id="next-page-button">Page suivante</button>
+          </div>
+
+          </div>
+          <div id="blocks-gui">
+            <button id="add-shape" style="font-size: 24px; font-family: 'Segoe UI Emoji', 'Apple Color Emoji',emoji;">🤍
+            </button>
+            <br><button id="done-adding"> Fin du jeu »</button>
+            <p id="square-countdown" class="hidden">85</p>
+            <p id="end-early-message" class="hidden">Tu dois sauvegarder au moins 5 formes pour passer à l’étape suivante</p>
+            <p id="continue-message" class="vertical-align hidden">Temps écoulé !
+              <br><br>Appuie sur le bouton ci-dessous pour passer à l’étape suivante 
+            </p>
+
+            <div id="modal-confirm-done" class="hidden">
+              <div id="modal-confirm-box">
+              <p>Es-tu sûr(e) de vouloir arrêter maintenant ?</p>
+              <button id="modal-confirm-cancel-button">Retour au jeu</button>
+              <button id="modal-confirm-done-button"> Fin du jeu » </button>
+              </div>
+            </div>
+
+            <div id="square-timeout-modal" class="hidden">
+              <div id="square-timeout-box">
+              <p>Attention, tu n’as pas effectué de mouvement depuis plus de 90 secondes, contrairement à la consigne de jouer de manière continue et sans distraction.
+                <br>Le jeu va maintenant se terminer et ta participation à l'étude sera incomplète.</p>
+              <button id="square-timeout-done-button">ok</button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="results-gui">
+            <div id="results-block">
+              <h1>Results</h1>
+              <div id="results-text" class="bottom-text">
+                <p id="rapid-search-text" class="hidden">
+                    Our study shows that creative search is a trade-off between novelty and value.
+                    <br>Your playing method suggests that you are <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> more inclined toward <span class="highlight">rapid and spreading</span>
+                    searches which result in higher visual novelty.
+                    In this kind of search, players tend to move rapidly between shapes, creating many shapes which spread across many different visual categories.
+                    This search strategy usually produces shapes that are more unique in our game.
+                  </p>
+                  <p id="focused-search-text" class="hidden">
+                    Our study shows that creative search is a trade-off between novelty and value.
+                    <br>Your playing method suggests that you are <span class="highlight"><span class="searchScorePercent highlight"></span>%</span> inclined toward <span class="highlight">focused and thoughtful searches</span> which result in higher visual value.
+                    In this kind of search, players tend to focus on each visual category they discover, collecting thoughtfully
+                    shapes at increasing visual consensus.
+                    This search strategy usually produces shapes that carry more meaning in our game.
+                  </p>
+
+                <p><br>Your game ID is: <br><br><span class="code" id="code"></span></p>
+
+                <p id="followup-link-container">Pour finir l’expérience, <a id="followup-link" href="">appuies sur ce lien</a>.</p>
+              </div>
+          </div>
+
+          <div id="thanks-block">
+            <h1 class="vertical-align">Merci d’avoir participé !</h1>
+          </div>
+
+        </div>
+      </div>
+
+      <div id="fullscreen-button">
+        <i id="fullscreen-button-full" class="icon-resize-full"></i>
+        <i id="fullscreen-button-small" class="icon-resize-small"></i>
+      </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="deps/pixi.js"></script>
+  <script src="deps/q.js"></script>
+  <script src="deps/q-xhr.js"></script>
+  <script src="deps/underscore.js"></script>
+  <script src="deps/redmetrics.js"></script>
+
+  <script src="bundle.js"></script>
+<!--  <script>-->
+<!--    document.getElementById("add-shape").addEventListener("click", function() {-->
+<!--      doc ument.getElementById("after-saving").click(); // Simulate clicking the "Next" button-->
+<!--    });-->
+<!--  </script>-->
+
+
+  </body>
+</html>
