@@ -232,6 +232,32 @@
     });
   };
 
-  // Override the rm2 global set by redmetrics.js
-  window.rm2 = { WriteConnection: WriteConnection };
+  var backend = getUrlParam('backend');
+  if (backend === 'aws') {
+    window.rm2 = { WriteConnection: WriteConnection };
+  } else if (backend === 'both') {
+    var OriginalWriteConnection = window.rm2.WriteConnection;
+    function BothWriteConnection(options) {
+      this.rm2Conn = new OriginalWriteConnection(options);
+      this.awsConn = new WriteConnection(options);
+    }
+    Object.defineProperty(BothWriteConnection.prototype, 'sessionId', {
+      get: function () { return this.awsConn.sessionId || this.rm2Conn.sessionId; }
+    });
+    BothWriteConnection.prototype.connect = function() {
+      var p1 = this.rm2Conn.connect();
+      var p2 = this.awsConn.connect();
+      return Promise.all([p1, p2]);
+    };
+    BothWriteConnection.prototype.postEvent = function(event) {
+      this.rm2Conn.postEvent(event);
+      this.awsConn.postEvent(event);
+    };
+    BothWriteConnection.prototype.updateSession = function(session) {
+      var p1 = this.rm2Conn.updateSession(session);
+      var p2 = this.awsConn.updateSession(session);
+      return Promise.all([p1, p2]);
+    };
+    window.rm2 = { WriteConnection: BothWriteConnection };
+  }
 }());
