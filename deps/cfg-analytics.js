@@ -65,7 +65,7 @@
     this._sessionMeta = Object.assign({}, urlParams, options.session || {});
     // Read gameVersion and gameId from URL params (matching old backend URL format).
     // Falls back to CFG_CONFIG values if not present in URL.
-    this._gameVersionId = getUrlParam('gameVersion') || window.CFG_CONFIG.DEFAULT_GAME_VERSION_ID || null;
+    this._gameVersionId = getUrlParam('gameVersion') || getUrlParam('apiKey') || window.CFG_CONFIG.DEFAULT_GAME_VERSION_ID || null;
     this._gameId = getUrlParam('gameId') || window.CFG_CONFIG.GAME_ID || null;
     this._sessionId = null;
     this._connected = false;
@@ -120,6 +120,7 @@
     }).then(function (data) {
       self._sessionId = data.createSession.id;
       self._connected = true;
+      console.log('CFG: connected, sessionId=' + self._sessionId);
       // Flush buffered events; guard each individually so one bad event can't
       // abort the flush and leave the rest stranded.
       var queued = self._eventQueue;
