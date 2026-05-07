@@ -1,8 +1,10 @@
 let KEYBOARD_CONTROL = false;
 let AUTO_START = true;
 let PROLIFIC = false;
-let TIMEOUT = false
+let TIMEOUT = false;
 let RM2 = true;
+let DOUBLE_GALLERY = false;
+
 const urlParams = new URL(location.href).searchParams;
 
 let FULL_SCREEN = false;
@@ -25,6 +27,9 @@ function readUrl() {
     }
     if (urlParams.get('rm1') === "true") {
         RM2 = false;
+    }
+    if (urlParams.get('double_gallery') === "true") {    // for french version 
+        DOUBLE_GALLERY = true;
     }
 }
 
@@ -10383,6 +10388,7 @@ x
                 this.done = false;
                 this.selectedIndexes = [];
                 this.pageNumber = 0;
+                this.galleryBgs = [];
 
                 this.container = new PIXI.Container();
                 sceneLayer.addChild(this.container);
@@ -10402,7 +10408,7 @@ x
                         pageContainer.visible = false;
                         _this6.pages.addChild(pageContainer);
                     }
-                    var galleryShapeCenter = new PIXI.Point(70 + col * 90, 95 + row * 85);
+                    var galleryShapeCenter = new PIXI.Point(70 + col * 90, 125 + row * 85);
 
                     var galleryBg = new PIXI.Graphics();
                     galleryBg.beginFill(0x333333);
@@ -10410,6 +10416,9 @@ x
                     galleryBg.endFill();
                     galleryBg.position = galleryShapeCenter;
                     pageContainer.addChild(galleryBg);
+
+                    _this6.galleryBgs[i] = galleryBg;
+
 
                     galleryBg.on("pointerdown", function (e) {
                         return _this6.onToggleShape(galleryBg, i);
@@ -10530,6 +10539,8 @@ x
         }, {
             key: "onDoneSelection",
             value: function onDoneSelection() {
+                var galleryRound = this.firstGalleryDone ? 2 : 1; // deccides if this it the first/second round of screen 6, relevent to the french version
+
                 var selectedShapes = _.map(this.selectedIndexes, function (index) {
                     return convertShapeToArray(galleryShapes[index]);
                 });
@@ -10539,10 +10550,34 @@ x
                 redmetricsConnection.postEvent({
                     type: "done selection",
                     customData: {
-                        shapeIndices: this.selectedIndexes,
+                        galleryRound: galleryRound,
+                        shapeIndices: this.selectedIndexes.slice(),
                         shapes: selectedShapes
                     }
                 });
+
+                if (DOUBLE_GALLERY && !this.firstGalleryDone){
+                    this.firstGalleryDone = true;
+
+                    var selected = this.selectedIndexes.slice();
+
+                    this.selectedIndexes = [];
+
+                    for (var i = 0; i < selected.length; i++){
+                        var bg = this.galleryBgs[selected[i]];
+                        bg.clear();
+                        bg.beginFill(0x333333);
+                        bg.drawRect(-40, -40, 80, 80);
+                        bg.endFill();
+                    }
+
+                    this.updateDoneButton();
+
+                    document.getElementById("gallery-instructions").style.display = "none";
+                    document.getElementById("gallery-instructions-2").style.display = "block";
+
+                    return;
+                }
 
                 this.done = true;
 
